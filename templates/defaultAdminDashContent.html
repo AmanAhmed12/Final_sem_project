@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amaan Ahmed</title>
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/aos.css">
+    <link rel="stylesheet" href="../static/css/line-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/portfolio.css">
+    <style>
+        #content {
+            margin-left: 5%;
+            margin-right: 15%;
+            margin-top: 10%;
+        }
+
+        body {
+            background-color: white;
+
+        }
+
+        .base {
+            background-color: #104735;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h6 {
+            color: black;
+        }
+
+        tr,
+        td,
+        th {
+            border: 5px solid white;
+        }
+
+        th {
+            color: orange;
+        }
+
+        #black {
+            color: black;
+        }
+
+        tr,
+        td,
+        th {
+            padding: 5%;
+        }
+
+        table {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body data-bs-spy="scroll" data-bs-target=".navbar">
+
+
+    <!-- content wrapper-->
+    <div id="content">
+
+
+
+
+        <div class="row pb-4" data-aos="fade-up">
+            <div class="col-lg-8">
+                <h6>Quiz Details</h6>
+                <h2>First year and Second year</h2>
+            </div>
+        </div>
+
+        <div class="row gy-5">
+            <div class="col-lg-6">
+                <h3 class="mb-4" data-aos="fade-up" data-aos-delay="300">First year</h3>
+                <div class="row gy-4">
+                    <div class="col-lg-10" data-aos="fade-up" data-aos-delay="600">
+                        <div class="base p-4 rounded-4 shadow-effect">
+                            <h5>First Semester <span class="firstyear"></span></h5>
+
+
+                            <table border="1">
+                                <tr>
+                                    <th>Index</th>
+                                    <th>Name</th>
+                                    <th>Subject</th>
+                                    <th>marks</th>
+                                    <th>Status</th>
+                                </tr>
+                                <tr>
+                                    <td>index</td>
+                                    <td>name</td>
+                                    <td>subject</td>
+                                    <td>marks</td>
+                                    <td>Status</td>
+                                </tr>
+
+
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-10" data-aos="fade-up" data-aos-delay="600">
+                        <div class="base p-4 rounded-4 shadow-effect">
+                            <h5>Second Semester <span class="firstyear"></span></h5>
+
+                            <table border="1">
+                                <tr>
+                                    <th>Index</th>
+                                    <th>Name</th>
+                                    <th>Subject</th>
+                                    <th>marks</th>
+                                    <th>Status</th>
+                                </tr>
+                                <tr>
+                                    <td>index</td>
+                                    <td>name</td>
+                                    <td>subject</td>
+                                    <td>marks</td>
+                                    <td>Status</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <h3 class="mb-4" data-aos="fade-up" data-aos-delay="300">Second Year</h3>
+                <div class="row gy-4">
+                    <div class="col-lg-10" data-aos="fade-up" data-aos-delay="600">
+                        <div class="base p-4 rounded-4 shadow-effect">
+                            <h5>First Semester <span class="secondyear"></span></h5>
+
+                            <table border="1">
+                                <tr>
+                                    <th>Index</th>
+                                    <th>Name</th>
+                                    <th>Subject</th>
+                                    <th>marks</th>
+                                    <th>Status</th>
+                                </tr>
+                                <tr>
+                                    <td>index</td>
+                                    <td>name</td>
+                                    <td>subject</td>
+                                    <td>marks</td>
+                                    <td>Status</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-10" data-aos="fade-up" data-aos-delay="600">
+                        <div class="base p-4 rounded-4 shadow-effect">
+                            <h5>Second Semester  <span class="secondyear"></span></h5>
+
+                            <table border="1">
+                                <tr>
+                                    <th>Index</th>
+                                    <th>Name</th>
+                                    <th>Subject</th>
+                                    <th>marks</th>
+                                    <th>Status</th>
+                                </tr>
+                                <tr>
+                                    <td>index</td>
+                                    <td>name</td>
+                                    <td>subject</td>
+                                    <td>marks</td>
+                                    <td>Status</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <div id="black">
+            amaan
+        </div>
+
+
+
+    </div>
+    <!-- //content wrapper-->
+
+    <script>
+        var firstYear = new Date().getFullYear() - 1; // Subtracting 1 years from the current year
+        var elementsfirst = document.getElementsByClassName("firstyear");
+        for (var i = 0; i < elementsfirst.length; i++) {
+            elementsfirst[i].textContent = firstYear;
+        }
+
+        var secondyear = new Date().getFullYear() - 2; // Subtracting 2 years from the current year
+        var elementssecond = document.getElementsByClassName("secondyear");
+        for (var i = 0; i < elementssecond.length; i++) {
+            elementssecond[i].textContent = secondyear;
+        }
+    </script>
+    <script src="../static/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/aos.js"></script>
+    <script src="../static/js/about.js"></script>
+</body>
+
+</html>

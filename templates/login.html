@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="./static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./static/css/aos.css">
+    <link href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" rel="stylesheet">
+
+    <style>
+        .button{
+            background-color: #0BDA51;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-r from-blue-400 via-white-500 to-green-600"  data-bs-spy="scroll"  >
+
+    
+    <div class="form-container">
+        <!-- login form -->
+        <div class="form login-form  rounded-5"  data-aos="fade-up" >
+            <a href="/"><i class="uil uil-times form_close"></i></a>
+            <form action="#" class="p-3" data-aos-delay="600">
+                <h2 class="text-center mb-4 font-bold log">Login</h2>
+                <div class="input-box mb-4">
+                    <input type="email" placeholder="Enter your email" required class="form-control">
+                    <i class="uil uil-envelope-alt email"></i>
+                </div>
+
+                <div class="input-box mb-4">
+                    <input type="password" placeholder="Enter your password" required class="form-control">
+                    <i class="uil uil-lock password"></i>
+                    <i class="uil uil-eye-slash pw_hide"></i>
+                </div>
+
+                <div class="option-field mb-4">
+                    <span class="checkbox">
+                        <input type="checkbox" id="check">
+                        <label for="check">Remember me</label>
+                    </span>
+                    <a href="#" class="forgot-pw " id="forgot">Forgot Password?</a>
+                </div>
+
+                <button class="button">Login</button>
+
+                <div class="login-signup mt-3">
+                    Don't have an account? <a href="/register" id="signup">Signup</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="./static/js/bootstrap.bundle.min.js"></script>
+    <script src="./static/js/aos.js"></script>
+    <script src="./static/js/main.js"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,237 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Protest+Guerrilla&display=swap');
+
+
+
+.navigation a {
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease-in-out;
+    border-radius: 0.5rem;
+}
+.navigation a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+#cont {
+    margin-top: 180px;
+    font-family: "Protest Guerrilla", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    opacity: 0; /* Initially hidden */
+    animation: fadeIn 10s ease forwards; /* Animation for fade-in effect */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+#imglogo {
+    width: 60px;
+    height: 60px;
+    margin-left: 20px;
+}
+.navigation{
+    margin-left: 50%;
+}
+.bodytext:hover{
+    color: white;
+}
+
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.bg-gradient-to-r {
+    background: linear-gradient(to right, hwb(203 2% 68%), #ffffff, #126b18);
+}
+
+.form-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
+    animation: gradient 15s ease infinite alternate;
+}
+
+
+
+.form {
+    position: relative;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    max-width: 400px;
+}
+
+.form_close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #777;
+    transition: color 0.3s ease;
+}
+
+.form_close:hover {
+    color: #333;
+}
+
+.form h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.input-box {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    outline: none;
+    background-color: transparent;
+    color: #333;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.input-box input:focus {
+    border-color: #ff4b2b;
+}
+
+.input-box i {
+    position: absolute;
+    right: 10px;
+    bottom: 12px;
+    color: #777;
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.input-box i:hover {
+    color: #333;
+}
+
+.option-field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    color: #777;
+}
+
+.checkbox label {
+    cursor: pointer;
+}
+
+.checkbox label:hover {
+    color: #333;
+}
+
+.button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff4b2b;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #ff416c;
+}
+
+.login-signup {
+    text-align: center;
+    color: #777;
+}
+
+.login-signup a {
+    color: #ff4b2b;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.login-signup a:hover {
+    color: #ff416c;
+}
+
+#forgot {
+    margin-left: 30px;
+}
+
+.log {
+    font-family: "Archivo Black", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+:root{
+    --color-body:#b6cbce;
+    --color-heading:#eef3db;
+    --color-base:#033f47;
+    --color-base2:#022a30;
+    --color-brand:#e0f780;
+    --color-brand2:#deff58;
+    --sidbar-width:240px;
+    --font-base:"Bai Jamjuree";
+}
+
+/*contact*/
+.btn1{
+    padding: 12px 28px;
+    font-weight: 700;
+    font-size: 14px;
+    background-color:#e0f780;
+}
+.btn-brand{
+    background-color:#e0f780;
+    border-color:white;
+    color:#033f47;
+}
+.btn-brand:hover,.btn-brand:focus{
+    background-color:#deff58 ;
+    color:#033f47;
+    border-color:white;
+}
+
+  #contact .form-control{
+        background-color: #033f47;
+        border-color:white;
+        color:#b6cbce;
+    }
+
+    #contact .form-control:focus{
+        border-color: #e0f780;
+        box-shadow: none;
+    }
+
+    #contact .form-control::placeholder{
+        color:#b6cbce;
+    }
+
+    #contact input .form-control{
+        height: 44px;
+    }
+/*close contact*/
