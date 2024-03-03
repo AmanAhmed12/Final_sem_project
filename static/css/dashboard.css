@@ -10,7 +10,7 @@
 }
 
 :root {
-  --blue: #00A36C;
+  --blue:linear-gradient(to right, hwb(203 2% 68%), #877171, #375239);
   --white: #fff;
   --gray: #f5f5f5;
   --black1: #222;
@@ -20,6 +20,7 @@
 body {
   min-height: 100vh;
   overflow-x: hidden;
+ 
 }
 
 .container {

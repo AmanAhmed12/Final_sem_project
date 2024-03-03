@@ -30,25 +30,25 @@
         <!-- login form -->
         <div class="form login-form  rounded-5"  data-aos="fade-up" >
             <a href="/"><i class="uil uil-times form_close"></i></a>
-            <form action="#" class="p-3" data-aos-delay="600">
+            <form action="/studentRegistration" method="post" class="p-3" data-aos-delay="600">
                 <h2 class="text-center mb-5 font-bold log">Register</h2>
                 <div class="input-box mb-4">
-                    <input type="email" placeholder="Enter your email" required class="form-control" style="width: 20rem;">
+                    <input type="email" placeholder="Enter your email" name="email" required class="form-control" style="width: 20rem;">
                     <i class="uil uil-envelope-alt email"></i>
                 </div>
 
                 <div class="input-box mb-4">
-                    <input type="text" placeholder="Enter your Index" required class="form-control" style="width: 20rem;">
+                    <input type="text" placeholder="Enter your Index" name="index" required class="form-control" style="width: 20rem;">
                     <i class="uil uil-user"></i>
                 </div>
 
                 <div class="input-box mb-4">
-                    <input type="text" placeholder="Enter your Name" required class="form-control" style="width: 20rem;">
+                    <input type="text" placeholder="Enter your Name" name="name" required class="form-control" style="width: 20rem;">
                     <i class="uil uil-user"></i>
                 </div>
 
                 <div class="input-box mb-4">
-                    <select class="form-control" style="width: 20rem;">
+                    <select class="form-control" name="semester" style="width: 20rem;">
                         <option>---------- Select Semester ----------</option>
                         <option>First Year First semester</option>
                         <option>First Year Second semester</option>
@@ -59,7 +59,7 @@
                 </div>
 
                 <div class="input-box mb-4">
-                    <input type="number" placeholder="Choose your Batch year" min="2022" max="2050" step="1" required class="form-control" style="width: 20rem;">
+                    <input type="number" name="year" placeholder="Choose your Batch year" min="2022" max="2050" step="1" required class="form-control" style="width: 20rem;">
                   
                 </div>
 
@@ -70,12 +70,12 @@
                 </div>
 
                 <div class="input-box mb-4">
-                    <input type="password" placeholder="Confirm your password" required class="form-control" style="width: 20rem;">
+                    <input type="password" name="password" placeholder="Confirm your password" required class="form-control" style="width: 20rem;">
                     <i class="uil uil-lock password"></i>
                     <i class="uil uil-eye-slash pw_hide"></i>
                 </div>
 
-                <button class="button rounded-3">Register</button>
+                <button type="submit" class="button rounded-3">Register</button>
 
                 <div class="login-signup mt-3">
                    Already have an account? <a href="/login" id="login">Signin</a>

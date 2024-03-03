@@ -51,7 +51,7 @@ body {
 }
 
 .bg-gradient-to-r {
-    background: linear-gradient(to right, hwb(203 2% 68%), #ffffff, #126b18);
+    background: linear-gradient(to right, hwb(203 2% 68%), #877171, #375239);
 }
 
 .form-container {
@@ -235,3 +235,4 @@ body {
         height: 44px;
     }
 /*close contact*/
+

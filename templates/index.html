@@ -10,34 +10,293 @@
     <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="/static/css/style.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="../static/css/portfolio.css">
+    <link rel="stylesheet" href="../static/css/aos.css">
+    <link rel="stylesheet" href="../static/css/line-awesome.min.css">
     <!-- Icon Library -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-   
+
+    <style>
+       
+        @import url('https://fonts.googleapis.com/css2?family=Anta&display=swap');
+
+        #ratehead {
+            font-weight: bold;
+        }
+
+        .feed {
+            font-family: "Anta", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .content1 {
+            border-bottom: 5px solid black;
+        }
+
+        .full-height {
+            min-height: 100vh;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            /* Ensure it stays above other content */
+
+        }
+
+        .con {
+
+            display: flex;
+            flex-direction: row;
+
+
+            width: 100%;
+
+
+        }
+
+
+        #one {
+
+            flex: 4;
+            padding: 10% 5% 2% 2%;
+
+
+
+        }
+
+        #two {
+
+            flex: 2;
+            padding-top: 3%;
+            overflow: hidden;
+
+
+        }
+
+        #side {
+            height: 90vh;
+            width: 30vw;
+
+
+        }
+
+        #contactinfo {
+            margin-top: 2rem;
+            /* Adjusted margin for better spacing */
+        }
+    </style>
 </head>
 
-<body class="bg-gradient-to-r from-blue-400 via-white-500 to-green-600">
-   
-    <!-- header -->
-    <header class="container mx-auto py-4 flex justify-between items-center">
-        <img src="./static/images/userlogo.png" id="imglogo" alt="Logo" class=" rounded-5">
-       
-        <nav class="navigation">
-            <a href="#" class="mx-2 hover:text-gray-300 font-bold">Home</a>
-            <a href="/about" class="mx-2 hover:text-gray-300 font-bold">About</a>
-            <a href="/contact" class="mx-2 hover:text-gray-300 font-bold">Contact</a>
-            <a href="/feed" class="mx-2 hover:text-gray-300 font-bold">Feedback</a>
-            <a href="/login" class="mx-2 hover:text-gray-300 font-bold" id="form-open">Login</a>
-        </nav>
-    </header>
+<body class="bg-gradient-to-r ">
 
-    <!-- home -->
-    <section class="container fade-in" id="cont">
-        <p class="text-5xl font-bold text-center mb-4 bodytext">Join the</p>
-        <p class="text-8xl font-bold text-center mb-4 bodytext">QUIZ <span class="text-green-400">SYSTEM</span></p>
-        <p class="text-4xl  font-bold text-center mb-8 bodytext">With Nuwan Jayasekara</p>
+
+    <section id="homemain" class="content1 full-height ">
+
+        <!-- header -->
+        <header class="container mx-auto py-4 flex justify-between  items-center bg-green">
+            <img src="./static/images/userlogo.png" id="imglogo" alt="Logo" class="rounded-5">
+            <nav class="navigation">
+                <a href="#homemain" class="mx-2 hover:text-gray-300 font-bold">Home</a>
+                <a href="#About" class="mx-2 hover:text-gray-300 font-bold">About</a>
+                <a href="#contactinfo" class="mx-2 hover:text-gray-300 font-bold">Contact</a>
+                <a href="#feedback" class="mx-2 hover:text-gray-300 font-bold">Feedback</a>
+                <a href="/login" class="mx-2 hover:text-gray-300 font-bold" id="form-open">Login</a>
+            </nav>
+        </header>
+
+        <!-- home -->
+        <section class="container fade-in" id="cont">
+            <p class="text-5xl font-bold text-center mb-4 bodytext">Join the</p>
+            <p class="text-8xl font-bold text-center mb-4 bodytext">QUIZ <span class="text-green-400">SYSTEM</span>
+            </p>
+            <p class="text-4xl font-bold text-center mb-8 bodytext">With Nuwan Jayasekara</p>
+
+        </section>
+
 
     </section>
+
+  
+
+        <!--About-->
+        <section id="About" class="content1 full-height">
+            <div class="con ">
+                <div class="col" id="one">
+
+                    <h1 class="display-4 fw-bold " data-aos="fade-up">I'M AN <span class="text-brand">ANDROID MOBILE APP
+                            DEVELOPER</span> | | <span class="text-brand">WEB DEVELOPER</span> | | <span
+                            class="text-brand">UI/UX DESIGNER</span> FROM KANDY, SRILANKA</h1>
+                    <p class="lead mt-2 mb-4" data-aos="fade-up" data-aos-delay="300">I am Amaan Ahmed, And I am a
+                        "Passionate Android mobile app developer, proficient web developer, and skilled UI/UX designer
+                        dedicated to creating intuitive, visually appealing, and high-performing digital experiences. With a
+                        blend of technical expertise and creative flair, I specialize in crafting innovative solutions that
+                        engage users and drive results."</p>
+
+
+                    <div id="buttons" data-aos="fade-up" data-aos-delay="300">
+                        <a href="/about" class="btn btn-brand me-3">View My Profile</a>
+                        <a href="..\static\cv\Resume.pdf" id="downloadLink" target="_blank" class="link-custom">Download
+                            Resume</a>
+                    </div>
+
+                </div>
+                <div class="col" id="two">
+                    <img src="../static/images/sideback3.jpeg" id="side" class="d-none d-lg-block rounded-4 " alt=""
+                        data-aos="fade-up" data-aos-delay="300">
+                </div>
+            </div>
+        </section>
+        <!--/About-->
+
+        <!---contact-->
+        <section id="contactinfo" class="content1 full-height">
+            <section id="contact" class="container px-4 py-8 mx-auto">
+                <div class="row justify-content-center text-center">
+                    <div class="col-lg-6 pb-4" data-aos="fade-up">
+                        <h6 class="text-brand">Contact</h6>
+                        <h1>Interested in working together? Let's talk</h1>
+                    </div>
+                    <div class="col-lg-8" data-aos="fade-up" data-aos-delay="300">
+                        <form id="contactForm" class="row g-3">
+                            <div class="form-group col-md-6">
+                                <input type="text" class="form-control" name="name" placeholder="Enter your name">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input type="email" class="form-control" name="email" placeholder="Enter your email">
+                            </div>
+                            <div class="form-group col-md-12">
+                                <input type="text" class="form-control" name="subject" id="subjectInput"
+                                    placeholder="Enter your subject">
+                            </div>
+                            <div class="form-group col-md-12">
+                                <textarea name="message" rows="4" class="form-control"
+                                    placeholder="Enter your message"></textarea>
+                            </div>
+                            <div class="form-group col-md-12  d-grid">
+                                <button type="button" class="btn1 btn-brand rounded-4" onclick="sendEmail()">Contact me</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </section>
+        <!---/contact-->
+
+        <!---feedback-->
+
+        <section id="feedback" class="content1 full-height">
+            <div  id="contact" class="container px-lg-5">
+                <div class="row justify-content-center text-center ">
+                    <div class="col-lg-6 pb-4 feed" data-aos="fade-up">
+                        <h6 class="text-brand">Feedback</h6>
+                        <h1>How was the Experience? Drop Suggestions</h1>
+                    </div>
+
+                    <!-- Star Ratings -->
+                    <div class="form-group col-md-12 mb-4">
+                        <label for="star-rating" id="ratehead">Rate Your Experience:</label>
+                        <span class="fa fa-star" onclick="document.getElementById('rating').value='1'; "></span>
+                        <span class="fa fa-star" onclick="document.getElementById('rating').value='2';"></span>
+                        <span class="fa fa-star" onclick="document.getElementById('rating').value='3';"></span>
+                        <span class="fa fa-star" onclick="document.getElementById('rating').value='4';"></span>
+                        <span class="fa fa-star" onclick="document.getElementById('rating').value='5';"></span>
+                    </div>
+
+                    <div class="col-lg-8" data-aos="fade-up" data-aos-delay="300">
+                        <form id="contactForm" class="row g-lg-3 gy-3">
+                            <div class="form-group col-md-6">
+                                <input type="text" class="form-control" name="name" placeholder="Enter your name">
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <input type="email" class="form-control" name="email" placeholder="Enter your email">
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <textarea name="message" rows="4" class="form-control"
+                                    placeholder="Enter your comments"></textarea>
+                            </div>
+
+
+                            <div class="form-group col-md-12 d-grid">
+                                <button type="button" class="btn1 btn-brand rounded-4"
+                                    onclick="sendFeedback(); resetStars();">Send Feedback</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </section>
+
+
+
+    <!---feedback-->
+
+
+    <section>
+
+
+    <!--footer-->
+    <footer class="py-5 px-lg-5">
+        <div class="container">
+            <div class="row gy-4 justify-content-between">
+                <div id="foot" class="col-auto">
+                    <p class="mb-8">© Amaan Ahmed 2024. All Rights Reserved.</p>
+                </div>
+
+                <div class="col-auto">
+                    <div class="social-icons">
+                        <a href="https://www.linkedin.com/in/aman-ahmed-601124272/" target="_blank"><i
+                                class="lab la-linkedin"></i></a>
+                        <a href="https://www.instagram.com/_______ahd8______/" target="_blank"><i
+                                class="lab la-instagram"></i></a>
+                        <a href="https://www.facebook.com/amaan.hilmy?mibextid=ZbWKwL" target="_blank"><i
+                                class="lab la-facebook"></i></a>
+                        <a href="https://github.com/AmanAhmed12" target="_blank"><i class="lab la-github"></i></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+</section>
+
+     <!--/footer-->
+
+    <script>
+        function resetStars() {
+            let stars = document.getElementsByClassName("fa fa-star");
+            for (let i = 0; i < stars.length; i++) {
+                stars[i].style.color = "black";
+            }
+        }
+
+        let stars = document.getElementsByClassName("fa fa-star");
+        for (let i = 0; i < stars.length; i++) {
+            stars[i].addEventListener("click", function () {
+                for (let j = 0; j <= i; j++) {
+                    stars[j].classList.add("checked");
+                    stars[j].style.color = "yellow";
+                }
+            });
+        }
+
+        function sendFeedback() {
+            // Here you can send the feedback along with the rating
+            // Resetting the stars' color is already called in the onclick event of the button
+        }
+
+    </script>
+    <script src="../static/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/aos.js"></script>
+    <script src="../static/js/about.js"></script>
 
 </body>
 
