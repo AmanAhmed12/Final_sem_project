@@ -24,16 +24,16 @@
     <div class="form-container">
         <!-- login form -->
         <div class="form login-form  rounded-5"  data-aos="fade-up" >
-            <a href="/"><i class="uil uil-times form_close"></i></a>
-            <form action="#" class="p-3" data-aos-delay="600">
+            <a href="#"><i class="uil uil-times form_close"></i></a>
+            <form action="/login" method="post" class="p-3" data-aos-delay="600">
                 <h2 class="text-center mb-4 font-bold log">Login</h2>
                 <div class="input-box mb-4">
-                    <input type="email" placeholder="Enter your email" required class="form-control">
+                    <input type="email" placeholder="Enter your email"  name="email" required class="form-control">
                     <i class="uil uil-envelope-alt email"></i>
                 </div>
 
                 <div class="input-box mb-4">
-                    <input type="password" placeholder="Enter your password" required class="form-control">
+                    <input type="password" placeholder="Enter your password"  name="password" required class="form-control">
                     <i class="uil uil-lock password"></i>
                     <i class="uil uil-eye-slash pw_hide"></i>
                 </div>
@@ -46,7 +46,7 @@
                     <a href="#" class="forgot-pw " id="forgot">Forgot Password?</a>
                 </div>
 
-                <button class="button">Login</button>
+                <button  type ="submit" class="button">Login</button>
 
                 <div class="login-signup mt-3">
                     Don't have an account? <a href="/register" id="signup">Signup</a>

@@ -20,18 +20,6 @@ toggle.onclick = function () {
   main.classList.toggle("active");
 };
 
-function loadCreateAccount() {
-  // Load dashboard.html into the content div
-  document.getElementById("content").innerHTML = '<iframe src="about.html" frameborder="0" style="width: 100vw; height: 100vh;"></iframe>';
-}
 
-function loadDefaultAdminDashboard() {
-  // Load dashboard.html into the content div
-  document.getElementById("content").innerHTML = '<iframe src="defaultAdminDashContent.html" frameborder="0" style="width: 100vw; height: 100vh;"></iframe>';
-}
 
-function loadQuizAttempt() {
-  // Load dashboard.html into the content div
-  document.getElementById("content").innerHTML = '<iframe src="about.html" frameborder="0" style="width: 100vw; height: 100vh;"></iframe>';
-}
 
