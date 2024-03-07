@@ -19,6 +19,10 @@
         .form-container{
             overflow: hidden;
         }
+        .fontcol{
+           color:red;
+           font-weight: bold;
+        }
     </style>
 </head>
 
@@ -32,6 +36,13 @@
             <a href="/"><i class="uil uil-times form_close"></i></a>
             <form action="/studentRegistration" method="post" class="p-3" data-aos-delay="600">
                 <h2 class="text-center mb-5 font-bold log">Register</h2>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} fontcol">{{ message }}</div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
                 <div class="input-box mb-4">
                     <input type="email" placeholder="Enter your email" name="email" required class="form-control" style="width: 20rem;">
                     <i class="uil uil-envelope-alt email"></i>

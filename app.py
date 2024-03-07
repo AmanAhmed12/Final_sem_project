@@ -1,20 +1,44 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
-from werkzeug.security import generate_password_hash, check_password_hash
-import firebase_admin
-from firebase_admin import credentials, db
+from flask import Flask, render_template, request, redirect, url_for, flash,session
+from werkzeug.security import generate_password_hash,check_password_hash
+from mysql.connector.errors import IntegrityError
+import mysql.connector
 
+
+
+connection=mysql.connector.connect(host="Localhost",user="root",password="",database="online_quiz_system")
+
+if connection.is_connected():
+    print("connected succeesfully..")
+
+else:
+    print("Failed to connect...")
 
 app = Flask(__name__)
 app.secret_key = 'AmaanAhmed'
 
-# Initialize Firebase Admin SDK with service account credentials
-cred = credentials.Certificate("D:\\final_project\\json\\serviceAccountKey.json")
-firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://quiz-system-6c1ff-default-rtdb.firebaseio.com/'
-})
-
-# Get a reference to the Firebase Realtime Database
-ref = db.reference('/')
+# Sample questions
+questions = [
+    {
+        'question': 'What is the capital of France?',
+        'options': ['Paris', 'London', 'Rome', 'Berlin'],
+        'answer': 'Paris'
+    },
+    {
+        'question': 'What is 2+2?',
+        'options': ['3', '4', '5', '6'],
+        'answer': '4'
+    },
+    {
+        'question': 'What is 3+3?',
+        'options': ['3', '4', '5', '6'],
+        'answer': '6'
+    },
+    {
+        'question': 'What is 4+4?',
+        'options': ['3', '4', '8', '6'],
+        'answer': '8'
+    }
+]
 
 @app.route('/')
 def index():
@@ -28,11 +52,6 @@ def log():
 def about():
     return render_template('about.html')
 
-@app.route('/defaultAdmin')
-def defaultAdmin():
-    return render_template('defaultAdminDashContent.html')
-
-
 @app.route('/register')
 def register():
     return render_template('register.html')
@@ -41,80 +60,172 @@ def register():
 def adminLogin():
     return render_template('admindashboard.html')
 
-# Inserting data into Firebase Realtime Database
+@app.route('/defaultAdminDashContent')
+def defaultAdminContent():
+    return render_template('defaultAdminDashContent.html')
+
+@app.route('/adminCreateAccount')
+def adminCreateAccount():
+    return render_template('adminAccountCreate.html')
+
+@app.route('/manageUsers')
+def manageUsers():
+    return render_template('manageUser.html')
+
+@app.route('/logout')
+def loggedOut():
+    return render_template('logout.html')
+
+
+
+@app.route('/studentdashboard')
+def stuLogin():
+    return render_template('studentdashboard.html')
+
+
+
+# Inserting data into details table
 @app.route('/studentRegistration', methods=['POST'])
 def insert_data():
-    s_email = request.form['email']
-    s_index = request.form['index']
-    s_name = request.form['name']
-    semester = request.form['semester']
-    year = request.form['year']
-    s_password = generate_password_hash(request.form['password'])  # Hash password
+    try:
+        s_email = request.form.get('email')
+        s_index = request.form.get('index')
+        s_name = request.form.get('name')
+        semester = request.form.get('semester')
+        year = request.form.get('year')
+        s_password = generate_password_hash(request.form.get('password'), method='pbkdf2:sha256')  # Hash password
+        
+        # Perform validation
+        if not s_email or not s_index or not s_name or not semester or not year or not s_password:
+            flash("All fields are required", "error")
+            return redirect(url_for('register'))
+
+        cursor = connection.cursor()
+        sql = "INSERT INTO student_details(email,indexNo,username,password,semester,year,status) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        val = (s_email, s_index, s_name, s_password, semester, year, "active")
+        cursor.execute(sql, val)
+        connection.commit()
+        cursor.close()
+        flash("Data inserted successfully into the details table", "success")
+        return redirect(url_for('log'))
+
+    except IntegrityError as e:
+        flash("Account  or Index already available!", "error")
+        return redirect(url_for('register'))
     
-    # Perform validation
-    if not s_email or not s_index or not s_name or not semester or not year or not s_password:
-        flash("All fields are required", "error")
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "error")
         return redirect(url_for('register'))
 
-    # Push data to Firebase Realtime Database
-    users_ref = ref.child('users')
-    users_ref.push({
-        'email': s_email,
-        'index': s_index,
-        'name': s_name,
-        'semester': semester,
-        'year': year,
-        'password': s_password
-    })
-
-    flash("Data inserted successfully into Firebase Realtime Database", "success")
-    return redirect(url_for('log'))
-
-
-
-@app.route('/login', methods=['GET', 'POST'])
+# login 
+@app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
-        s_email = request.form['email']
-        s_password = request.form['password']
+        s_email = request.form.get('email')
+        s_password = request.form.get('password')
         
-        # Retrieve user data from Firebase Realtime Database based on email
-        users_ref = ref.child('users')
-        query = users_ref.order_by_child('email').equal_to(s_email).get()
-        
-        # Check if user with provided email exists
-        if query:
-            user_key = list(query.keys())[0]  # Get the user key
-            user_data = query[user_key]  # Get user data
-            
-            # Check if password matches
-            if check_password_hash(user_data['password'], s_password):
-                # Store user data in session for future use
-                session['user'] = user_data
-                
-                # Redirect to dashboard.html
-                return redirect(url_for('adminLogin'))
-        
-        # If user does not exist or password is incorrect, show error message
-        flash("Incorrect username or password", "error")
-        print(user_key)
-        print(user_data)
+        cursor = connection.cursor()
+
+        # Check admin_details table
+        cursor.execute("SELECT email, password, status FROM admin_details WHERE email = %s", (s_email,))
+        admin_data = cursor.fetchone()
+
+        if admin_data:  # If user data exists
+            if admin_data[0] == s_email and check_password_hash(admin_data[1], s_password) and admin_data[2] == "active":  # If password matches
+                session['user_type'] = 'admin'  # Set session variable to identify user type
+                session['admin'] = s_email  # Store the current user's email in the session
+                sql = "UPDATE admin_details SET status = %s WHERE email = %s"
+                cursor.execute(sql, ('loggedin', s_email))
+                connection.commit()
+                cursor.close()
+                return redirect(url_for('adminLogin'))  # Redirect to admin dashboard
+
+        # Check student_details table
+        cursor.execute("SELECT email, password, status FROM student_details WHERE email = %s", (s_email,))
+        student_data = cursor.fetchone()
+       
+        if student_data:  # If user data exists
+            if student_data[0] == s_email and check_password_hash(student_data[1], s_password) and student_data[2] == "active":  # If password matches
+                session['user_type'] = 'student'  # Set session variable to identify user type
+                session['student'] = s_email  # Store the current user's email in the session
+                sql = "UPDATE student_details SET status = %s WHERE email = %s"
+                cursor.execute(sql, ('loggedin', s_email))
+                connection.commit()
+                cursor.close()
+                return redirect(url_for('stuLogin'))  # Redirect to student dashboard
+
+        cursor.close()
+
+        # If no match is found in either table, show error message and redirect to login page
+        flash("Invalid email or password", "error")
         return redirect(url_for('log'))
     
     # If it's a GET request, render the login page
     return render_template('login.html')
 
+@app.route('/signOut', methods=['POST'])
+def logOut():
+    confirmed = request.form.get('confirmed')
+    if confirmed == 'yes':
+       
+            cursor = connection.cursor()
+            if 'student' in session:
+                # If the session indicates that the current user is a student, update the student_details table
+                sql = "UPDATE student_details SET status = %s WHERE email = %s"
+                cursor.execute(sql, ('active', session.get('student')))
+                connection.commit()
+                cursor.close()
+                session.pop('student')  # Remove the user's email from the session
+                session.pop('user_type')  # Remove the user's type from the session
+                flash("Logged out successfully student", "success")
+                return redirect(url_for('log'))  # Redirect to the login page
+            elif 'admin' in session:
+                # If the session indicates that the current user is an admin, update the admin_details table
+                sql = "UPDATE admin_details SET status = %s WHERE email = %s"
+                cursor.execute(sql, ('active', session.get('admin')))
+                connection.commit()
+                cursor.close()
+                session.pop('admin')  # Remove the user's email from the session
+                session.pop('user_type')  # Remove the user's type from the session
+                flash("Logged out successfully admin", "success")
+                return redirect(url_for('log'))  # Redirect to the login page
+            else:
+                # If the user type is not specified in the session, return an error or handle it accordingly
+                flash("User type not specified", "error")
+                return redirect(url_for('log'))
+     
+
+    
+    if 'student' in session:
+        return redirect(url_for('stuLogin'))  # Redirect to the home page or another appropriate page
+    elif 'admin' in session:
+        return redirect(url_for('adminLogin'))  # Redirect to the home page or another appropriate page
+    else:
+        return redirect(url_for('loggedOut'))
 
 
 
-@app.route('/result')
-def result():
-    # Fetch data from the Firebase Realtime Database
-    users_ref = ref.child('users')
-    users_data = users_ref.get()
+        
+     
 
-    # Render the 'result.html' template with the retrieved data
-    return render_template('result.html', users=users_data)
+   
+       
+
+   
+    
+
+
+
+
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    score = 0
+    for q in questions:
+        selected_option = request.form.get(q['question'])
+        if selected_option == q['answer']:
+            score += 1
+    return render_template('result.html', score=score, total=len(questions))
 
 if __name__ == '__main__':
     app.run(debug=True)
