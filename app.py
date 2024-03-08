@@ -2,7 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, flash,sess
 from werkzeug.security import generate_password_hash,check_password_hash
 from mysql.connector.errors import IntegrityError
 import mysql.connector
-
+import traceback
+from flask_mail import Mail,Message
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 
 connection=mysql.connector.connect(host="Localhost",user="root",password="",database="online_quiz_system")
@@ -14,6 +18,14 @@ else:
     print("Failed to connect...")
 
 app = Flask(__name__)
+# Configure Flask-Mail settings
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USERNAME'] = 'ananahd1000@gmail.com'  # Replace with your Gmail address
+app.config['MAIL_PASSWORD'] = 'sqxb fzvr lonm oojx'  
+mail=Mail(app)
 app.secret_key = 'AmaanAhmed'
 
 # Sample questions
@@ -84,9 +96,9 @@ def manageUsers():
 def loggedOut():
     return render_template('logout.html')
 
-
-
-
+@app.route('/forgotpwd')
+def forgotpwd():
+    return render_template('forgotpassword.html')
 
 
 @app.route('/closeupdate')
@@ -135,6 +147,53 @@ def insert_data():
     except Exception as e:
         flash(f"An error occurred: {str(e)}", "error")
         return redirect(url_for('register'))
+    
+
+
+
+
+
+# create admin account
+@app.route('/createAdminAccount', methods=['POST'])
+def createAdminAccount():
+    try:
+        s_email = request.form.get('email')
+        s_name = request.form.get('name')
+        s_password = request.form.get('password')
+        s_confirmpassword = request.form.get('confirmpassword')  # corrected variable name
+        
+        # Perform validation
+        if not s_email or not s_password or not s_name:
+            flash("All fields are required", "error")
+            return redirect(url_for('adminCreateAccount'))
+        elif s_password != s_confirmpassword:
+            flash("Passwords do not match", "error")
+            return redirect(url_for('adminCreateAccount'))
+        else:
+            # Hash the password
+            hashed_password =generate_password_hash(request.form.get('confirmpassword'), method='pbkdf2:sha256')  # Hash password
+
+            cursor = connection.cursor()
+            sql = "INSERT INTO admin_details(email, username, password, status) VALUES (%s, %s, %s, %s)"
+            val = (s_email, s_name,hashed_password, "active")
+            cursor.execute(sql, val)
+            connection.commit()
+            cursor.close()
+            flash("Admin Account created successfully", "success")
+            return redirect(url_for('adminCreateAccount'))
+
+    except IntegrityError as e:
+        flash("Account already available!", "error")
+        return redirect(url_for('adminCreateAccount'))
+    
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "error")
+        return redirect(url_for('adminCreateAccount'))
+
+
+
+
+
 
 # login 
 @app.route('/login', methods=['POST', 'GET'])
@@ -258,10 +317,74 @@ def updateAccount():
     return redirect(url_for('log'))  # Redirect to the logout route
 
   
-        
-     
 
-   
+#forgot password
+@app.route('/forgotpassword', methods=['POST'])
+def forgotpassword():        
+    try:
+        s_email = request.form.get('email')
+        s_password = request.form.get('password')
+        s_confirmpassword = request.form.get('confirmpassword')  # corrected variable name
+       
+        
+        # Perform validation
+        if not s_confirmpassword or not s_password or not s_email:
+            flash("All fields are required", "error")
+            return redirect(url_for('forgotpwd'))
+        elif s_password != s_confirmpassword:
+            flash("Passwords do not match", "error")
+            return redirect(url_for('forgotpwd'))
+        else:
+            cursor = connection.cursor()
+               # Check student_details table
+            cursor.execute("SELECT email FROM student_details WHERE email = %s", (s_email,))
+            student_data = cursor.fetchone()
+       
+            if student_data:  # If user data exists
+                  
+                    msg = Message('Subject: New Password for Your Account', sender='ananahd1000@gmail.com', recipients=[s_email])  # Replace sender and recipients
+                    msg.body =  f"Your new password is: {s_confirmpassword}"
+                    mail.send(msg)
+                    hashed_password =generate_password_hash(request.form.get('confirmpassword'), method='pbkdf2:sha256')  # Hash password
+                    # If the session indicates that the current user is an admin, update the admin_details table
+                    sql = "UPDATE student_details SET  password = %s WHERE email = %s"
+                    cursor.execute(sql, (hashed_password,s_email))
+                    connection.commit()
+                    cursor.close()
+                    flash("password updated successfully student", "success")
+                    return redirect(url_for('log'))
+            
+            cursor.execute("SELECT email FROM admin_details WHERE email = %s", (s_email,))
+            admin_data = cursor.fetchone()
+            if admin_data:  # If user data exists 
+                    msg = Message('Subject: New Password for Your Account', sender='ananahd1000@gmail.com', recipients=[s_email])  # Replace sender and recipients
+                    msg.body =  f"Your new password is: {s_confirmpassword}"
+                    mail.send(msg)
+                    hashed_password =generate_password_hash(request.form.get('confirmpassword'), method='pbkdf2:sha256')  # Hash password
+                    # If the session indicates that the current user is an admin, update the admin_details table
+                    sql = "UPDATE admin_details SET  password = %s WHERE email = %s"
+                    cursor.execute(sql, (hashed_password,s_email))
+                    connection.commit()
+                    cursor.close()
+                    flash("password updated successfully admin", "success")
+                    return redirect(url_for('log'))  # Redirect to the login page
+                
+              
+            flash("Account not found", "error")
+            return redirect(url_for('forgotpwd'))  # Redirect to the login page
+
+
+    except IntegrityError as e:
+        flash("Account already available!", "error")
+        return redirect(url_for('forgotpwd'))
+    
+    except Exception as e:
+     
+        flash(f"An error occurred: {traceback.format_exc()}", "error")
+        return redirect(url_for('forgotpwd'))
+    
+
+  
        
 
    
