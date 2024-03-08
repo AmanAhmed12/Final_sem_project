@@ -60,6 +60,10 @@ def register():
 def adminLogin():
     return render_template('admindashboard.html')
 
+@app.route('/studentdashboard')
+def stuLogin():
+    return render_template('studentdashboard.html')
+
 @app.route('/defaultAdminDashContent')
 def defaultAdminContent():
     return render_template('defaultAdminDashContent.html')
@@ -67,6 +71,10 @@ def defaultAdminContent():
 @app.route('/adminCreateAccount')
 def adminCreateAccount():
     return render_template('adminAccountCreate.html')
+
+@app.route('/ProfileUpdate')
+def ProfileUpdate():
+    return render_template('profileUpdate.html')
 
 @app.route('/manageUsers')
 def manageUsers():
@@ -78,9 +86,20 @@ def loggedOut():
 
 
 
-@app.route('/studentdashboard')
-def stuLogin():
-    return render_template('studentdashboard.html')
+
+
+
+@app.route('/closeupdate')
+def closeupdate():
+            if 'student' in session:
+                return redirect(url_for('stuLogin'))  # Redirect to the login page
+            elif 'admin' in session:
+                return redirect(url_for('adminLogin'))  # Redirect to the login page
+            else:
+                # If the user type is not specified in the session, return an error or handle it accordingly
+                flash("User type not specified", "error")
+                return redirect(url_for('log'))
+    
 
 
 
@@ -204,7 +223,41 @@ def logOut():
         return redirect(url_for('loggedOut'))
 
 
+@app.route('/updateAccount', methods=['POST'])
+def updateAccount():
+    newemail = request.form.get('email')
+    newname = request.form.get('name')
+    newpassword = generate_password_hash(request.form.get('newpass'), method='pbkdf2:sha256')
+    cursor = connection.cursor()
+    
+  
+    if 'student' in session:
+            # If the session indicates that the current user is a student, update the student_details table
+            sql = "UPDATE student_details SET username = %s, password = %s, email = %s, status = %s WHERE email = %s"
+            cursor.execute(sql, (newname, newpassword, newemail, 'active', session.get('student')))
+            connection.commit()
+            cursor.close()
+            session.pop('student')  # Remove the user's email from the session
+            session.pop('user_type')  # Remove the user's type from the session
+            flash("Profile updated successfully student", "success")
+           
+    elif 'admin' in session:
+            # If the session indicates that the current user is an admin, update the admin_details table
+            sql = "UPDATE admin_details SET username = %s, password = %s, email = %s, status = %s WHERE email = %s"
+            cursor.execute(sql, (newname, newpassword, newemail, 'active', session.get('admin')))
+            connection.commit()
+            cursor.close()
+            session.pop('admin')  # Remove the user's email from the session
+            session.pop('user_type')  # Remove the user's type from the session
+            flash("Profile updated successfully admin", "success")
+          
+    else:
+           
+            return redirect(url_for('log'))
+        
+    return redirect(url_for('log'))  # Redirect to the logout route
 
+  
         
      
 
