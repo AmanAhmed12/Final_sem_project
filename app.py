@@ -4,9 +4,7 @@ from mysql.connector.errors import IntegrityError
 import mysql.connector
 import traceback
 from flask_mail import Mail,Message
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+
 
 
 connection=mysql.connector.connect(host="Localhost",user="root",password="",database="online_quiz_system")
@@ -23,7 +21,7 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_USERNAME'] = 'ananahd1000@gmail.com'  # Replace with your Gmail address
+app.config['MAIL_USERNAME'] = 'ananahd1000@gmail.com'  
 app.config['MAIL_PASSWORD'] = 'sqxb fzvr lonm oojx'  
 mail=Mail(app)
 app.secret_key = 'AmaanAhmed'
@@ -80,6 +78,10 @@ def stuLogin():
 def defaultAdminContent():
     return render_template('defaultAdminDashContent.html')
 
+@app.route('/defaultStuDashContent')
+def defaultStuDashContent():
+    return render_template('defaultStudentDashContent.html')
+
 @app.route('/adminCreateAccount')
 def adminCreateAccount():
     return render_template('adminAccountCreate.html')
@@ -87,6 +89,10 @@ def adminCreateAccount():
 @app.route('/ProfileUpdate')
 def ProfileUpdate():
     return render_template('profileUpdate.html')
+
+@app.route('/loadGuidelines')
+def loadGuidelines():
+    return render_template('guidelines.html')
 
 @app.route('/manageUsers')
 def manageUsers():
@@ -99,6 +105,21 @@ def loggedOut():
 @app.route('/forgotpwd')
 def forgotpwd():
     return render_template('forgotpassword.html')
+
+
+
+
+
+
+
+# display year when student login
+def get_user_data(email):
+    cursor = connection.cursor()
+    cursor.execute("SELECT year FROM student_details WHERE email = %s", (email,))
+    user_data = cursor.fetchone()
+    cursor.close()
+    return  int(user_data[0]) 
+
 
 
 @app.route('/closeupdate')
@@ -230,6 +251,13 @@ def login():
                 cursor.execute(sql, ('loggedin', s_email))
                 connection.commit()
                 cursor.close()
+                # Call get_user_data function to fetch user's year and store it in session
+                user_year = get_user_data(s_email)
+                if user_year:
+                        session['user_year'] = user_year
+                else:
+                        session.pop('user_year', None)
+
                 return redirect(url_for('stuLogin'))  # Redirect to student dashboard
 
         cursor.close()
@@ -240,6 +268,9 @@ def login():
     
     # If it's a GET request, render the login page
     return render_template('login.html')
+
+
+
 
 @app.route('/signOut', methods=['POST'])
 def logOut():
