@@ -158,7 +158,7 @@ def insert_data():
         cursor.execute(sql, val)
         connection.commit()
         cursor.close()
-        flash("Data inserted successfully into the details table", "success")
+        flash("Account Created Successfully !!!", "success")
         return redirect(url_for('log'))
 
     except IntegrityError as e:
@@ -415,7 +415,41 @@ def forgotpassword():
         return redirect(url_for('forgotpwd'))
     
 
-  
+
+@app.route('/update_user_status/<string:email>/<string:action>', methods=['POST'])
+def update_user_status(email, action):
+    try:
+        cursor = connection.cursor()
+        if action == 'activate':
+            status = 'active'
+        elif action == 'deactivate':
+            status = 'inactive'
+        else:
+            flash("Invalid action", "error")
+            return redirect(url_for('manageUsers'))
+
+        sql = "UPDATE student_details SET status = %s WHERE email = %s"
+        cursor.execute(sql, (status, email))
+        connection.commit()
+        cursor.close()
+        return redirect(url_for('displayUsers'))
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "error")
+        return redirect(url_for('manageUsers'))
+
+
+@app.route('/displayUsers')
+def displayUsers():
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SELECT email, indexNo, username, password, semester, year, status FROM student_details")
+        users_data = cursor.fetchall()
+        cursor.close()
+        return render_template('manageUser.html', users=users_data)
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "error")
+        return redirect(url_for('adminLogin'))
+
        
 
    
