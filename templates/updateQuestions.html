@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Quiz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="./static/css/aos.css">
+    <link href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <!-- Font Awesome -->      
+   <style>
+   .formback{
+    width:75vw;
+    margin:2%;
+   }
+   .detail{
+    display: inline-block;
+   }
+   .form-control{
+        margin-right:3%;
+    }
+   .head{
+    font-size: 3rem;
+   }
+   .QA{
+    margin-bottom: 2%;
+   }
+   </style>
+</head>
+
+<body data-bs-spy="scroll">
+    <div class="flexed">
+        <!-- Update form -->
+        <div class="formback rounded-5 md:w-1/2 lg:w-1/3 px-4" data-aos="fade-up">
+            <form id="updateForm" action="/updateQuestionsForm" method="post" class="p-3">
+                <!-- Flash messages handling -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} fontcol">{{ message }}</div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                   
+                <!-- Form fields -->
+                <h1 class="head text-center mb-5 font-bold log mt-4">Update Questions</h1>
+                <h1 class="mb-5 font-bold log mt-4">Subject & Semester Details</h1>
+                <div class="mb-4">
+                    {% if question_details %}
+                    <input type="text" value="{{ question_details[0] }}" name="qid">
+                    <input type="text" value="{{ question_details[5] }}" placeholder="Enter Quiz ID" name="quizid" required class="form-control detail" style="width: 20rem;">
+                    <input type="text" value="{{ question_details[2] }}" placeholder="Enter subject name" name="name" required class="form-control detail" style="width: 20rem;">
+                    {% endif %}
+                </div>
+                
+                <div class="mb-4">
+                    <select class="form-control detail" name="semester" style="width: 20rem;">
+                        <option value="" disabled>---------- Select Semester ----------</option>
+                        {% if question_details %}
+                        <option value="First Year First semester" {% if question_details[1] == 'First Year First semester' %} selected {% endif %}>First Year First semester</option>
+                        <option value="First Year Second semester" {% if question_details[1] == 'First Year Second semester' %} selected {% endif %}>First Year Second semester</option>
+                        <option value="Second Year First semester" {% if question_details[1] == 'Second Year First semester' %} selected {% endif %}>Second Year First semester</option>
+                        <option value="Second Year Second semester" {% if question_details[1] == 'Second Year Second semester' %} selected {% endif %}>Second Year Second semester</option>
+                        {% endif %}
+                    </select>
+                </div>
+
+                <!-- Questions -->
+                <div class="mb-4">
+                    <h1 class="mb-5 font-bold log mt-4">Update Question</h1>
+                    {% if question_details %}
+                    <input type="text" name="q1" value="{{ question_details[3] }}" placeholder="1. Type a Question" required class="form-control QA">
+                    <input type="text" name="q1a1" value="{{ question_details[4] }}" placeholder="Answer" required class="form-control QA" style="width: 20rem;">
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="button rounded-3 w-full">Update Question</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Your script includes -->
+    <script src="./static/js/bootstrap.bundle.min.js"></script>
+    <script src="./static/js/aos.js"></script>
+    <script src="./static/js/main.js"></script>
+</body>
+
+</html>

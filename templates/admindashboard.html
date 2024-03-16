@@ -72,11 +72,20 @@
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="#" onclick="loadGenerateQuiz()">
                         <span class="icon">
                             <ion-icon name="chatbubble-ellipses"></ion-icon>
                         </span>
                         <span class="title">Generate Quizzes</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" onclick="loadViewQuiz();">
+                        <span class="icon">
+                            <ion-icon name="chatbubble-ellipses"></ion-icon>
+                        </span>
+                        <span class="title">View Quizzes</span>
                     </a>
                 </li>
 
@@ -149,9 +158,13 @@
             document.getElementById('content').innerHTML = '<iframe src="/displayUsers" frameborder="0" style="width: 100vw; height: 100%;"></iframe>';
         }
 
-        function loadQuizAttempt() {
+        function loadGenerateQuiz() {
             // Load dashboard.html into the content div
-            document.getElementById("content").innerHTML = '<iframe src="about.html" frameborder="0" style="width: 100vw; height: 100%;"></iframe>';
+            document.getElementById("content").innerHTML = '<iframe src="/generateQuiz" frameborder="0" style="width: 100vw; height: 100%;"></iframe>';
+        }
+        function loadViewQuiz() {
+            // Load dashboard.html into the content div
+            document.getElementById("content").innerHTML = '<iframe src="/viewQuiz" frameborder="0" style="width: 100vw; height: 100%;"></iframe>';
         }
 
       

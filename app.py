@@ -3,9 +3,10 @@ from werkzeug.security import generate_password_hash,check_password_hash
 from mysql.connector.errors import IntegrityError
 import mysql.connector
 import traceback
-from flask_mail import Mail,Message
-
-
+from flask_mail import Mail,Message   
+import uuid
+import random
+import string
 
 connection=mysql.connector.connect(host="Localhost",user="root",password="",database="online_quiz_system")
 
@@ -58,6 +59,10 @@ def index():
 def log():
     return render_template('login.html')
 
+@app.route('/generateQuiz')
+def generateQuiz():
+    return render_template('generateQuiz.html')
+
 @app.route('/about')
 def about():
     return render_template('about.html')
@@ -106,9 +111,13 @@ def loggedOut():
 def forgotpwd():
     return render_template('forgotpassword.html')
 
+@app.route('/manageQuiz')
+def manageQuiz():
+    return render_template('manageQuiz.html')
 
-
-
+@app.route('/updateQuestions')
+def updateQuestions():
+    return render_template('updateQuestions.html')
 
 
 
@@ -121,7 +130,7 @@ def get_user_data(email):
     return  int(user_data[0]) 
 
 
-
+#close icon
 @app.route('/closeupdate')
 def closeupdate():
             if 'student' in session:
@@ -271,7 +280,7 @@ def login():
 
 
 
-
+#signout
 @app.route('/signOut', methods=['POST'])
 def logOut():
     confirmed = request.form.get('confirmed')
@@ -313,6 +322,7 @@ def logOut():
         return redirect(url_for('loggedOut'))
 
 
+#update Account
 @app.route('/updateAccount', methods=['POST'])
 def updateAccount():
     newemail = request.form.get('email')
@@ -415,7 +425,7 @@ def forgotpassword():
         return redirect(url_for('forgotpwd'))
     
 
-
+#update user status
 @app.route('/update_user_status/<string:email>/<string:action>', methods=['POST'])
 def update_user_status(email, action):
     try:
@@ -438,6 +448,7 @@ def update_user_status(email, action):
         return redirect(url_for('manageUsers'))
 
 
+#display users
 @app.route('/displayUsers')
 def displayUsers():
     try:
@@ -450,10 +461,131 @@ def displayUsers():
         flash(f"An error occurred: {str(e)}", "error")
         return redirect(url_for('adminLogin'))
 
+
+
+@app.route('/quizGenerate', methods=['POST'])
+def quizGenerate():  
+    try:
+        # Extract quiz details from the form data
+        quiz_id = request.form.get('quizid')
+        subject_name = request.form.get('name')
+        semester = request.form.get('semester')
+        year = request.form.get('year')
+        
+        cursor = connection.cursor()
+
        
 
-   
+        # Insert quiz details into the quiz table
+        sql_quiz = "INSERT INTO quiz(quiz_id,semester, subject, year) VALUES (%s, %s, %s, %s)"
+        val_quiz = (quiz_id, semester, subject_name, year)
+        cursor.execute(sql_quiz, val_quiz)
+
+        # Extract questions and answers
+        for i in range(1, 21):
+            question = request.form.get(f'q{i}')
+            answer = request.form.get(f'q{i}a1')
+             # Generate a unique qid
+            qid = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+
+            # Insert each question and answer into the questions table
+            sql_question = "INSERT INTO questions(quiz_id, qid, semester, subject, questions, answers) VALUES (%s, %s, %s, %s, %s, %s)"
+            val_question = (quiz_id, qid, semester, subject_name, question, answer)
+            cursor.execute(sql_question, val_question)
+
+        # Commit the transaction
+        connection.commit()
+        cursor.close()
+
+        flash("Quiz Generated Successfully!", "success")
+        return redirect(url_for('generateQuiz'))  # Redirect to a suitable view after quiz generation
+
+    except IntegrityError as e:
+        flash("Quiz details already exist or Integrity error!", "error")
+        return redirect(url_for('generateQuiz'))
+
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "error")
+        return redirect(url_for('generateQuiz'))
+
+
     
+
+#view quiz
+@app.route('/viewQuiz')
+def viewQuiz():
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SELECT  qid,semester, subject, questions,answers,quiz_id FROM questions")
+        quiz_data = cursor.fetchall()
+        cursor.close()
+        return render_template('manageQuiz.html', quizes=quiz_data)
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "error")
+        return redirect(url_for('manageQuiz'))
+    
+
+
+@app.route('/update_quiz_status/<string:qid>/<string:action>', methods=['POST'])
+def update_quiz_status(qid, action):
+    try:
+        cursor = connection.cursor()
+        if action == 'Delete':
+            sql = "DELETE FROM questions WHERE qid= %s"
+            cursor.execute(sql, (qid,))
+            connection.commit()
+            cursor.close()
+            flash("Deleted Successfully!!!", "success")
+            return redirect(url_for('viewQuiz'))  # Redirect after deletion
+        
+        elif action == 'Update':
+            # Fetch the details of the question using the qid
+            sql = "SELECT * FROM questions WHERE qid = %s"
+            cursor.execute(sql, (qid,))
+            question_details = cursor.fetchone()
+            cursor.close()
+
+            # Pass the question details to the updateQuestions.html template
+            return render_template('updateQuestions.html', question_details=question_details)
+        
+        else:
+            flash("Invalid action", "error")
+            return redirect(url_for('viewQuiz'))
+
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "error")
+        return redirect(url_for('viewQuiz'))
+
+    
+
+
+@app.route('/updateQuestionsForm', methods=['POST'])
+def updateQuestionsForm():
+    try:
+        cursor = connection.cursor()
+        qid = request.form.get('qid')
+        quiz_id = request.form.get('quizid')
+        subject = request.form.get('name')
+        semester = request.form.get('semester')
+        question = request.form.get('q1')
+        answer = request.form.get('q1a1')
+
+        sql = "UPDATE questions SET semester = %s, subject = %s, questions = %s, answers = %s, quiz_id = %s WHERE qid = %s"
+        cursor.execute(sql, (semester, subject, question, answer, quiz_id, qid))
+        connection.commit()
+        cursor.close()
+        flash("Successfully Updated Question !!!")
+        return redirect(url_for('viewQuiz'))
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "error")
+        return redirect(url_for('viewQuiz'))
+
+
+
+
+
+
+
 
 
 

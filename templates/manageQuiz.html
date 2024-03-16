@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="./static/css/aos.css">
+    <link href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+
+<style>
+.formback{
+    background-color: white;
+    width:70%;
+    resize: horizontal;
+    resize: vertical;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    margin: 7%  0% 2% 2%;
+    margin-left: 5%;
+    overflow-y: scroll;
+    
+}
+.fonthead{
+    font-size: 1.5rem;
+}
+
+.btnActive{
+    background-color: green;
+    font-weight: bold;
+    padding:8%;
+    font-size: 0.8rem;
+    margin: 3%;
+    width:120%;
+}
+
+.btnDeactive{
+    background-color:red;
+    font-weight: bold;
+    width:120%;
+    padding:8%;
+    font-size: 0.8rem;
+    margin:3%;
+}
+
+
+@media (max-width: 768px) {
+
+
+    .fonthead{
+    font-size: 0.9rem;
+}
+
+.formback{
+    background-color: green;
+    width:70%;
+    height:30%;
+   
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    margin: 10%  16% 2% 2%;
+    
+    overflow: scroll;
+    
+}
+
+
+
+th{
+    font-size: 0.5rem;
+}
+td{
+    font-size: 0.5rem;
+}
+
+.btnActive{
+    background-color: green;
+    font-weight: bold;
+    padding:8%;
+    font-size: 0.5rem;
+    margin: 3%;
+    width:120%;
+}
+
+.btnDeactive{
+    background-color:red;
+    font-weight: bold;
+    width:120%;
+    padding:8%;
+    font-size: 0.5rem;
+    margin:3%;
+}
+
+}
+
+</style>
+</head>
+
+<body data-bs-spy="scroll">
+
+   
+        
+            <!-- Table -->
+            <div class="formback rounded-4  md:w-1/2 lg:w-1/3 px-4"  style="height: 500px; overflow-y: scroll;" data-aos="fade-up">
+               
+                <div class="table-responsive pt-4 tab" >
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} fontcol">{{ message }}</div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                    <h2 class=" head text-center mb-5 font-bold log mt-4 fonthead">Quizzess</h2>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="px-4 py-2">qid</th>
+                                <th class="px-4 py-2">semester</th>
+                                <th class="px-4 py-2">subject</th>
+                                <th class="px-4 py-2">questions</th>
+                                <th class="px-4 py-2">answers</th>
+                                <th class="px-4 py-2">quiz_id </th>
+                                <th class="px-4 py-2">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for quiz in quizes %}
+                            <tr>
+                                <td class="px-4 py-2">{{ quiz[0] }}</td> <!--qid -->
+                                <td class="px-4 py-2">{{ quiz[1] }}</td> <!-- semester -->
+                                <td class="px-4 py-2">{{ quiz[2] }}</td> <!-- subject -->
+                                <td class="px-4 py-2">{{ quiz[3] }}</td> <!-- questions -->
+                                <td class="px-4 py-2">{{ quiz[4] }}</td> <!-- answers -->
+                                <td class="px-4 py-2">{{ quiz[5] }}</td> <!-- quiz_id -->
+                                
+                                <td class="px-4 py-2">
+                                    <form action="{{ url_for('update_quiz_status', qid=quiz[0], action='Delete') }}" method="POST">
+                                        <button type="submit" class=" button btnActive rounded-3">Delete</button>
+                                    </form>
+                                    <form action="{{ url_for('update_quiz_status', qid=quiz[0], action='Update') }}" method="POST">
+                                        <button type="submit" class=" button btnDeactive rounded-3">Update</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        
+                    </table>
+                </div>
+            </div>
+        
+    
+            
+
+    <script src="./static/js/bootstrap.bundle.min.js"></script>
+    <script src="./static/js/aos.js"></script>
+    <script src="./static/js/main.js"></script>
+
+</body>
+
+</html>
