@@ -67,15 +67,13 @@
                     {% for i in range(questions|length) %}
                     <input type="text" name="question{{ i+1 }}" value="{{ questions[i] }}" required class="form-control QA">
                     <div class="ans">
-                        <label><input type="checkbox" name="question{{ i+1 }}a1" value="{{ answers[i][0] }}" required
-                                class="form-control QA"> {{ answers[i][0] }}</label>
-                        <label><input type="checkbox" name="question{{ i+1 }}a2" value="{{ answers[i][1] }}" required
-                                class="form-control QA"> {{ answers[i][1] }}</label>
-                        <label><input type="checkbox" name="question{{ i+1 }}a3" value="{{ answers[i][2] }}" required
-                                class="form-control QA"> {{ answers[i][2] }}</label>
+                        <label><input type="radio" name="answer{{ i }}" value="{{ answers[i][0] }}" > {{ answers[i][0] }}</label>
+                        <label><input type="radio" name="answer{{ i }}" value="{{ answers[i][1] }}" > {{ answers[i][1] }}</label>
+                        <label><input type="radio" name="answer{{ i }}" value="{{ answers[i][2] }}" > {{ answers[i][2] }}</label>
                     </div>
                     {% endfor %}
                 </div>
+                
 
                 <button type="submit" class="button rounded-3 w-full">Submit Quiz</button>
             </form>
@@ -89,3 +87,4 @@
 </body>
 
 </html>
+

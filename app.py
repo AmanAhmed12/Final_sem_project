@@ -28,29 +28,7 @@ app.config['MAIL_PASSWORD'] = 'sqxb fzvr lonm oojx'
 mail=Mail(app)
 app.secret_key = 'AmaanAhmed'
 
-# Sample questions
-questions = [
-    {
-        'question': 'What is the capital of France?',
-        'options': ['Paris', 'London', 'Rome', 'Berlin'],
-        'answer': 'Paris'
-    },
-    {
-        'question': 'What is 2+2?',
-        'options': ['3', '4', '5', '6'],
-        'answer': '4'
-    },
-    {
-        'question': 'What is 3+3?',
-        'options': ['3', '4', '5', '6'],
-        'answer': '6'
-    },
-    {
-        'question': 'What is 4+4?',
-        'options': ['3', '4', '8', '6'],
-        'answer': '8'
-    }
-]
+
 
 @app.route('/')
 def index():
@@ -643,114 +621,296 @@ def quiz():
 @app.route('/attemptQuizSubOne', methods=['GET'])
 def attemptQuizSubOne():
     try:
-        # Assume connection object is defined and imported properly
         cursor = connection.cursor()
-        sql = "SELECT questions, answers FROM questions WHERE subject = 'sub1' AND semester = 'First Year First semester' ORDER BY RAND() LIMIT 10"
-        cursor.execute(sql)
-        question_data = cursor.fetchall()  # Fetch all the questions and correct answers
-        cursor.close()
-        
-        questions = []  # List to store questions
-        answers = []  # List to store answers for questions
-        
-        # Fetch answers for the other questions
-        for question, correct_answer in question_data:
-            # Fetch two random incorrect answers from other questions
-            cursor = connection.cursor()
-            sql = "SELECT answers FROM questions WHERE subject = 'sub1' AND semester = 'First Year First semester' AND answers != %s ORDER BY RAND() LIMIT 2"
-            cursor.execute(sql, (correct_answer,))
-            other_answers = [row[0] for row in cursor.fetchall()]  # Fetch two incorrect answers
-            cursor.close()
+        sql = "SELECT semester FROM student_details WHERE email = %s"
+        cursor.execute(sql, (session.get('student'),))
+        semester_row = cursor.fetchone()
+
+        if semester_row:
+            semester = semester_row[0]  # Extract the string value from the tuple
+            if semester == "First Year First semester":
+                sql = "SELECT questions, answers FROM questions WHERE subject = 'sub1' AND semester = 'First Year First semester' ORDER BY RAND() LIMIT 10"
+                cursor.execute(sql)
+                question_data = cursor.fetchall()
+                questions = []
+                answers = []
+                for question, correct_answer in question_data:
+                    other_cursor = connection.cursor()
+                    sql = "SELECT answers FROM questions WHERE subject = 'sub1' AND semester = 'First Year First semester' AND answers != %s ORDER BY RAND() LIMIT 2"
+                    other_cursor.execute(sql, (correct_answer,))
+                    other_answers = [row[0] for row in other_cursor.fetchall()]
+                    other_cursor.close()
+                    all_answers = [correct_answer] + other_answers
+                    random.shuffle(all_answers)
+                    questions.append(question)
+                    answers.append(all_answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers)
             
-            # Add the correct answer and two other random incorrect answers
-            all_answers = [correct_answer] + other_answers
-            random.shuffle(all_answers)  # Shuffle the answers
+            elif semester=="First Year Second semester":
+                sql = "SELECT questions, answers FROM questions WHERE subject = 'sub1' AND semester = 'First Year Second semester' ORDER BY RAND() LIMIT 10"
+                cursor.execute(sql)
+                question_data = cursor.fetchall()
+                questions = []
+                answers = []
+                for question, correct_answer in question_data:
+                    other_cursor = connection.cursor()
+                    sql = "SELECT answers FROM questions WHERE subject = 'sub1' AND semester = 'First Year Second semester' AND answers != %s ORDER BY RAND() LIMIT 2"
+                    other_cursor.execute(sql, (correct_answer,))
+                    other_answers = [row[0] for row in other_cursor.fetchall()]
+                    other_cursor.close()
+                    all_answers = [correct_answer] + other_answers
+                    random.shuffle(all_answers)
+                    questions.append(question)
+                    answers.append(all_answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers)
             
-            questions.append(question)
-            answers.append(all_answers)
-        
-        return render_template('attemptQuiz.html', questions=questions, answers=answers)
+            elif semester=="Second Year First semester":
+                sql = "SELECT questions, answers FROM questions WHERE subject = 'sub1' AND semester = 'Second Year First semester' ORDER BY RAND() LIMIT 10"
+                cursor.execute(sql)
+                question_data = cursor.fetchall()
+                questions = []
+                answers = []
+                for question, correct_answer in question_data:
+                    other_cursor = connection.cursor()
+                    sql = "SELECT answers FROM questions WHERE subject = 'sub1' AND semester = 'Second Year First semester' AND answers != %s ORDER BY RAND() LIMIT 2"
+                    other_cursor.execute(sql, (correct_answer,))
+                    other_answers = [row[0] for row in other_cursor.fetchall()]
+                    other_cursor.close()
+                    all_answers = [correct_answer] + other_answers
+                    random.shuffle(all_answers)
+                    questions.append(question)
+                    answers.append(all_answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+            
+            elif semester=="Second Year Second semester":
+                sql = "SELECT questions, answers FROM questions WHERE subject = 'sub1' AND semester = 'Second Year Second semester' ORDER BY RAND() LIMIT 10"
+                cursor.execute(sql)
+                question_data = cursor.fetchall()
+                questions = []
+                answers = []
+                for question, correct_answer in question_data:
+                    other_cursor = connection.cursor()
+                    sql = "SELECT answers FROM questions WHERE subject = 'sub1' AND semester = 'Second Year Second semester' AND answers != %s ORDER BY RAND() LIMIT 2"
+                    other_cursor.execute(sql, (correct_answer,))
+                    other_answers = [row[0] for row in other_cursor.fetchall()]
+                    other_cursor.close()
+                    all_answers = [correct_answer] + other_answers
+                    random.shuffle(all_answers)
+                    questions.append(question)
+                    answers.append(all_answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+            
+            
+
+
+        else:
+            flash("Semester information not found for the user.")
+            return redirect(url_for('viewQuiz'))
 
     except Exception as e:
         print(e)
         flash("An error occurred while fetching questions.", "error")
         return redirect(url_for('viewQuiz'))
-    
+    finally:
+        cursor.close()
+
 
 
 
 @app.route('/attemptQuizSubTwo', methods=['GET'])
 def attemptQuizSubTwo():
     try:
-        # Assume connection object is defined and imported properly
         cursor = connection.cursor()
-        sql = "SELECT questions, answers FROM questions WHERE subject = 'sub2' AND semester = 'First Year First semester' ORDER BY RAND() LIMIT 10"
-        cursor.execute(sql)
-        question_data = cursor.fetchall()  # Fetch all the questions and correct answers
-        cursor.close()
-        
-        questions = []  # List to store questions
-        answers = []  # List to store answers for questions
-        
-        # Fetch answers for the other questions
-        for question, correct_answer in question_data:
-            # Fetch two random incorrect answers from other questions
-            cursor = connection.cursor()
-            sql = "SELECT answers FROM questions WHERE subject = 'sub2' AND semester = 'First Year First semester' AND answers != %s ORDER BY RAND() LIMIT 2"
-            cursor.execute(sql, (correct_answer,))
-            other_answers = [row[0] for row in cursor.fetchall()]  # Fetch two incorrect answers
-            cursor.close()
+        sql = "SELECT semester FROM student_details WHERE email = %s"
+        cursor.execute(sql, (session.get('student'),))
+        semester_row = cursor.fetchone()
+
+        if semester_row:
+            semester = semester_row[0]  # Extract the string value from the tuple
+            if semester == "First Year First semester":
+                sql = "SELECT questions, answers FROM questions WHERE subject = 'sub2' AND semester = 'First Year First semester' ORDER BY RAND() LIMIT 10"
+                cursor.execute(sql)
+                question_data = cursor.fetchall()
+                questions = []
+                answers = []
+                for question, correct_answer in question_data:
+                    other_cursor = connection.cursor()
+                    sql = "SELECT answers FROM questions WHERE subject = 'sub2' AND semester = 'First Year First semester' AND answers != %s ORDER BY RAND() LIMIT 2"
+                    other_cursor.execute(sql, (correct_answer,))
+                    other_answers = [row[0] for row in other_cursor.fetchall()]
+                    other_cursor.close()
+                    all_answers = [correct_answer] + other_answers
+                    random.shuffle(all_answers)
+                    questions.append(question)
+                    answers.append(all_answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers)
             
-            # Add the correct answer and two other random incorrect answers
-            all_answers = [correct_answer] + other_answers
-            random.shuffle(all_answers)  # Shuffle the answers
+            elif semester=="First Year Second semester":
+                sql = "SELECT questions, answers FROM questions WHERE subject = 'sub2' AND semester = 'First Year Second semester' ORDER BY RAND() LIMIT 10"
+                cursor.execute(sql)
+                question_data = cursor.fetchall()
+                questions = []
+                answers = []
+                for question, correct_answer in question_data:
+                    other_cursor = connection.cursor()
+                    sql = "SELECT answers FROM questions WHERE subject = 'sub2' AND semester = 'First Year Second semester' AND answers != %s ORDER BY RAND() LIMIT 2"
+                    other_cursor.execute(sql, (correct_answer,))
+                    other_answers = [row[0] for row in other_cursor.fetchall()]
+                    other_cursor.close()
+                    all_answers = [correct_answer] + other_answers
+                    random.shuffle(all_answers)
+                    questions.append(question)
+                    answers.append(all_answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers)
             
-            questions.append(question)
-            answers.append(all_answers)
-        
-        return render_template('attemptQuiz.html', questions=questions, answers=answers)
+            elif semester=="Second Year First semester":
+                sql = "SELECT questions, answers FROM questions WHERE subject = 'sub2' AND semester = 'Second Year First semester' ORDER BY RAND() LIMIT 10"
+                cursor.execute(sql)
+                question_data = cursor.fetchall()
+                questions = []
+                answers = []
+                for question, correct_answer in question_data:
+                    other_cursor = connection.cursor()
+                    sql = "SELECT answers FROM questions WHERE subject = 'sub2' AND semester = 'Second Year First semester' AND answers != %s ORDER BY RAND() LIMIT 2"
+                    other_cursor.execute(sql, (correct_answer,))
+                    other_answers = [row[0] for row in other_cursor.fetchall()]
+                    other_cursor.close()
+                    all_answers = [correct_answer] + other_answers
+                    random.shuffle(all_answers)
+                    questions.append(question)
+                    answers.append(all_answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+            
+            elif semester=="Second Year Second semester":
+                sql = "SELECT questions, answers FROM questions WHERE subject = 'sub2' AND semester = 'Second Year Second semester' ORDER BY RAND() LIMIT 10"
+                cursor.execute(sql)
+                question_data = cursor.fetchall()
+                questions = []
+                answers = []
+                for question, correct_answer in question_data:
+                    other_cursor = connection.cursor()
+                    sql = "SELECT answers FROM questions WHERE subject = 'sub2' AND semester = 'Second Year Second semester' AND answers != %s ORDER BY RAND() LIMIT 2"
+                    other_cursor.execute(sql, (correct_answer,))
+                    other_answers = [row[0] for row in other_cursor.fetchall()]
+                    other_cursor.close()
+                    all_answers = [correct_answer] + other_answers
+                    random.shuffle(all_answers)
+                    questions.append(question)
+                    answers.append(all_answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+            
+            
+
+
+        else:
+            flash("Semester information not found for the user.")
+            return redirect(url_for('viewQuiz'))
 
     except Exception as e:
         print(e)
         flash("An error occurred while fetching questions.", "error")
         return redirect(url_for('viewQuiz'))
+    finally:
+        cursor.close()
+
+
     
 
 @app.route('/attemptQuizSubThree', methods=['GET'])
 def attemptQuizSubThree():
     try:
-        # Assume connection object is defined and imported properly
         cursor = connection.cursor()
-        sql = "SELECT questions, answers FROM questions WHERE subject = 'sub3' AND semester = 'First Year First semester' ORDER BY RAND() LIMIT 10"
-        cursor.execute(sql)
-        question_data = cursor.fetchall()  # Fetch all the questions and correct answers
-        cursor.close()
-        
-        questions = []  # List to store questions
-        answers = []  # List to store answers for questions
-        
-        # Fetch answers for the other questions
-        for question, correct_answer in question_data:
-            # Fetch two random incorrect answers from other questions
-            cursor = connection.cursor()
-            sql = "SELECT answers FROM questions WHERE subject = 'sub3' AND semester = 'First Year First semester' AND answers != %s ORDER BY RAND() LIMIT 2"
-            cursor.execute(sql, (correct_answer,))
-            other_answers = [row[0] for row in cursor.fetchall()]  # Fetch two incorrect answers
-            cursor.close()
+        sql = "SELECT semester FROM student_details WHERE email = %s"
+        cursor.execute(sql, (session.get('student'),))
+        semester_row = cursor.fetchone()
+
+        if semester_row:
+            semester = semester_row[0]  # Extract the string value from the tuple
+            if semester == "First Year First semester":
+                sql = "SELECT questions, answers FROM questions WHERE subject = 'sub3' AND semester = 'First Year First semester' ORDER BY RAND() LIMIT 10"
+                cursor.execute(sql)
+                question_data = cursor.fetchall()
+                questions = []
+                answers = []
+                for question, correct_answer in question_data:
+                    other_cursor = connection.cursor()
+                    sql = "SELECT answers FROM questions WHERE subject = 'sub3' AND semester = 'First Year First semester' AND answers != %s ORDER BY RAND() LIMIT 2"
+                    other_cursor.execute(sql, (correct_answer,))
+                    other_answers = [row[0] for row in other_cursor.fetchall()]
+                    other_cursor.close()
+                    all_answers = [correct_answer] + other_answers
+                    random.shuffle(all_answers)
+                    questions.append(question)
+                    answers.append(all_answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers)
             
-            # Add the correct answer and two other random incorrect answers
-            all_answers = [correct_answer] + other_answers
-            random.shuffle(all_answers)  # Shuffle the answers
+            elif semester=="First Year Second semester":
+                sql = "SELECT questions, answers FROM questions WHERE subject = 'sub3' AND semester = 'First Year Second semester' ORDER BY RAND() LIMIT 10"
+                cursor.execute(sql)
+                question_data = cursor.fetchall()
+                questions = []
+                answers = []
+                for question, correct_answer in question_data:
+                    other_cursor = connection.cursor()
+                    sql = "SELECT answers FROM questions WHERE subject = 'sub3' AND semester = 'First Year Second semester' AND answers != %s ORDER BY RAND() LIMIT 2"
+                    other_cursor.execute(sql, (correct_answer,))
+                    other_answers = [row[0] for row in other_cursor.fetchall()]
+                    other_cursor.close()
+                    all_answers = [correct_answer] + other_answers
+                    random.shuffle(all_answers)
+                    questions.append(question)
+                    answers.append(all_answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers)
             
-            questions.append(question)
-            answers.append(all_answers)
-        
-        return render_template('attemptQuiz.html', questions=questions, answers=answers)
+            elif semester=="Second Year First semester":
+                sql = "SELECT questions, answers FROM questions WHERE subject = 'sub3' AND semester = 'Second Year First semester' ORDER BY RAND() LIMIT 10"
+                cursor.execute(sql)
+                question_data = cursor.fetchall()
+                questions = []
+                answers = []
+                for question, correct_answer in question_data:
+                    other_cursor = connection.cursor()
+                    sql = "SELECT answers FROM questions WHERE subject = 'sub3' AND semester = 'Second Year First semester' AND answers != %s ORDER BY RAND() LIMIT 2"
+                    other_cursor.execute(sql, (correct_answer,))
+                    other_answers = [row[0] for row in other_cursor.fetchall()]
+                    other_cursor.close()
+                    all_answers = [correct_answer] + other_answers
+                    random.shuffle(all_answers)
+                    questions.append(question)
+                    answers.append(all_answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+            
+            elif semester=="Second Year Second semester":
+                sql = "SELECT questions, answers FROM questions WHERE subject = 'sub3' AND semester = 'Second Year Second semester' ORDER BY RAND() LIMIT 10"
+                cursor.execute(sql)
+                question_data = cursor.fetchall()
+                questions = []
+                answers = []
+                for question, correct_answer in question_data:
+                    other_cursor = connection.cursor()
+                    sql = "SELECT answers FROM questions WHERE subject = 'sub3' AND semester = 'Second Year Second semester' AND answers != %s ORDER BY RAND() LIMIT 2"
+                    other_cursor.execute(sql, (correct_answer,))
+                    other_answers = [row[0] for row in other_cursor.fetchall()]
+                    other_cursor.close()
+                    all_answers = [correct_answer] + other_answers
+                    random.shuffle(all_answers)
+                    questions.append(question)
+                    answers.append(all_answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+            
+            
+
+
+        else:
+            flash("Semester information not found for the user.")
+            return redirect(url_for('viewQuiz'))
 
     except Exception as e:
         print(e)
         flash("An error occurred while fetching questions.", "error")
         return redirect(url_for('viewQuiz'))
+    finally:
+        cursor.close()
     
 
 
@@ -758,50 +918,142 @@ def attemptQuizSubThree():
 @app.route('/attemptQuizSubFour', methods=['GET'])
 def attemptQuizSubFour():
     try:
-        # Assume connection object is defined and imported properly
         cursor = connection.cursor()
-        sql = "SELECT questions, answers FROM questions WHERE subject = 'sub4' AND semester = 'First Year First semester' ORDER BY RAND() LIMIT 10"
-        cursor.execute(sql)
-        question_data = cursor.fetchall()  # Fetch all the questions and correct answers
-        cursor.close()
-        
-        questions = []  # List to store questions
-        answers = []  # List to store answers for questions
-        
-        # Fetch answers for the other questions
-        for question, correct_answer in question_data:
-            # Fetch two random incorrect answers from other questions
-            cursor = connection.cursor()
-            sql = "SELECT answers FROM questions WHERE subject = 'sub4' AND semester = 'First Year First semester' AND answers != %s ORDER BY RAND() LIMIT 2"
-            cursor.execute(sql, (correct_answer,))
-            other_answers = [row[0] for row in cursor.fetchall()]  # Fetch two incorrect answers
-            cursor.close()
+        sql = "SELECT semester FROM student_details WHERE email = %s"
+        cursor.execute(sql, (session.get('student'),))
+        semester_row = cursor.fetchone()
+
+        if semester_row:
+            semester = semester_row[0]  # Extract the string value from the tuple
+            if semester == "First Year First semester":
+                sql = "SELECT questions, answers FROM questions WHERE subject = 'sub4' AND semester = 'First Year First semester' ORDER BY RAND() LIMIT 10"
+                cursor.execute(sql)
+                question_data = cursor.fetchall()
+                questions = []
+                answers = []
+                for question, correct_answer in question_data:
+                    other_cursor = connection.cursor()
+                    sql = "SELECT answers FROM questions WHERE subject = 'sub4' AND semester = 'First Year First semester' AND answers != %s ORDER BY RAND() LIMIT 2"
+                    other_cursor.execute(sql, (correct_answer,))
+                    other_answers = [row[0] for row in other_cursor.fetchall()]
+                    other_cursor.close()
+                    all_answers = [correct_answer] + other_answers
+                    random.shuffle(all_answers)
+                    questions.append(question)
+                    answers.append(all_answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers)
             
-            # Add the correct answer and two other random incorrect answers
-            all_answers = [correct_answer] + other_answers
-            random.shuffle(all_answers)  # Shuffle the answers
+            elif semester=="First Year Second semester":
+                sql = "SELECT questions, answers FROM questions WHERE subject = 'sub4' AND semester = 'First Year Second semester' ORDER BY RAND() LIMIT 10"
+                cursor.execute(sql)
+                question_data = cursor.fetchall()
+                questions = []
+                answers = []
+                for question, correct_answer in question_data:
+                    other_cursor = connection.cursor()
+                    sql = "SELECT answers FROM questions WHERE subject = 'sub4' AND semester = 'First Year Second semester' AND answers != %s ORDER BY RAND() LIMIT 2"
+                    other_cursor.execute(sql, (correct_answer,))
+                    other_answers = [row[0] for row in other_cursor.fetchall()]
+                    other_cursor.close()
+                    all_answers = [correct_answer] + other_answers
+                    random.shuffle(all_answers)
+                    questions.append(question)
+                    answers.append(all_answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers)
             
-            questions.append(question)
-            answers.append(all_answers)
-        
-        return render_template('attemptQuiz.html', questions=questions, answers=answers)
+            elif semester=="Second Year First semester":
+                sql = "SELECT questions, answers FROM questions WHERE subject = 'sub4' AND semester = 'Second Year First semester' ORDER BY RAND() LIMIT 10"
+                cursor.execute(sql)
+                question_data = cursor.fetchall()
+                questions = []
+                answers = []
+                for question, correct_answer in question_data:
+                    other_cursor = connection.cursor()
+                    sql = "SELECT answers FROM questions WHERE subject = 'sub4' AND semester = 'Second Year First semester' AND answers != %s ORDER BY RAND() LIMIT 2"
+                    other_cursor.execute(sql, (correct_answer,))
+                    other_answers = [row[0] for row in other_cursor.fetchall()]
+                    other_cursor.close()
+                    all_answers = [correct_answer] + other_answers
+                    random.shuffle(all_answers)
+                    questions.append(question)
+                    answers.append(all_answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+            
+            elif semester=="Second Year Second semester":
+                sql = "SELECT questions, answers FROM questions WHERE subject = 'sub4' AND semester = 'Second Year Second semester' ORDER BY RAND() LIMIT 10"
+                cursor.execute(sql)
+                question_data = cursor.fetchall()
+                questions = []
+                answers = []
+                for question, correct_answer in question_data:
+                    other_cursor = connection.cursor()
+                    sql = "SELECT answers FROM questions WHERE subject = 'sub4' AND semester = 'Second Year Second semester' AND answers != %s ORDER BY RAND() LIMIT 2"
+                    other_cursor.execute(sql, (correct_answer,))
+                    other_answers = [row[0] for row in other_cursor.fetchall()]
+                    other_cursor.close()
+                    all_answers = [correct_answer] + other_answers
+                    random.shuffle(all_answers)
+                    questions.append(question)
+                    answers.append(all_answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+            
+            
+
+
+        else:
+            flash("Semester information not found for the user.")
+            return redirect(url_for('viewQuiz'))
 
     except Exception as e:
         print(e)
         flash("An error occurred while fetching questions.", "error")
         return redirect(url_for('viewQuiz'))
+    finally:
+        cursor.close()
+    
+   
 
-
-
-
-@app.route('/submit', methods=['POST'])
-def submit():
+@app.route('/quizSubmit', methods=['POST'])
+def quizSubmit():
+    # Initialize variables to store the score and total questions
     score = 0
-    for q in questions:
-        selected_option = request.form.get(q['question'])
-        if selected_option == q['answer']:
-            score += 1
-    return render_template('result.html', score=score, total=len(questions))
+    total_questions = 10  # Total questions are always 10
+    questions = [request.form.get('question{}'.format(i+1)) for i in range(total_questions)]
+    selected_answers = [request.form.get('answer{}'.format(i)) for i in range(total_questions)]
+
+    # Loop through the questions and retrieve their corresponding answers from the database
+    for question_text, selected_answer in zip(questions, selected_answers):
+        # Execute a SQL query to retrieve the answer for the current question
+        cursor = connection.cursor()
+        cursor.execute("SELECT answers FROM questions WHERE questions=%s", (question_text,))
+        result = cursor.fetchone()
+        if result:
+            # Retrieve the correct answer from the database
+            correct_answer = result[0]
+            print("Selected Answer:", selected_answer)
+            print("Correct Answer:", correct_answer)
+            # If the selected answer matches the correct answer
+            if selected_answer == correct_answer:
+                # Increment the score variable by 1
+                score += 1
+        else:
+            print("Question not found in the database:", question_text)
+        # Consume all results before closing the cursor
+        cursor.fetchall()
+        # Close the cursor
+        cursor.close()
+
+
+    # Calculate the percentage
+    percentage = (score / total_questions) * 100
+
+    # Render the result.html template with the score and percentage
+    return render_template('result.html', score=score, percentage=percentage)
+
+
+
+
+   
 
 if __name__ == '__main__':
     app.run(debug=True)

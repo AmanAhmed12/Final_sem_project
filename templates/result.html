@@ -3,30 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Result</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Quiz Result</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            padding: 50px;
+        }
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            margin-left: 27%;
+            margin-top: 35%;
+            width:100%;
+            height:70%;
+            
+        }
+
+        .card-body {
+            text-align: center;
+        }
+
+        .card-title {
+            color: #007bff;
+        }
+
+        hr {
+            background-color: #007bff;
+            height: 2px;
+        }
+
+        p {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+       
+        
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Result</h1>
-        <p>Your score is {{ score }} out of {{ total }}</p>
-  
-
-
-
-        <h1>Users Data</h1>
-        <ul>
-            {% for user_id, user_info in users.items() %}
-            <li>
-                Email: {{ user_info['email'] }}<br>
-                Index: {{ user_info['index'] }}<br>
-                Name: {{ user_info['name'] }}<br>
-                Semester: {{ user_info['semester'] }}<br>
-                Year: {{ user_info['year'] }}<br>
-                Password: {{ user_info['password'] }}<br>
-            </li>
-            {% endfor %}
-        </ul>
+        <div class="row">
+            <div class="col-md-6 ">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Quiz Result</h2>
+                        <hr>
+                        <p>Your Score: {{ score }}/10</p>
+                        <p>Percentage: {{ percentage }}%</p>
+                        <a href="/defaultStuDashContent" class="btn btn-primary">Back to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- Include Bootstrap JS (optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
