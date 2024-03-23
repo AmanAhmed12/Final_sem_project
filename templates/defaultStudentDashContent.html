@@ -51,26 +51,41 @@
         td,
         th {
             padding: 5%;
-            margin:2%;
+            margin: 2%;
             font-size: 1rem;
-            color: black;
-           
-        
+            color: white;
+            resize: both;
+
+
+        }
+       
+        td{
+            font-size: 0.7rem;
         }
 
         table {
-            resize: horizontal;
+            resize: both;
             width: 100%;
         }
-        .back{
+
+        .back {
             background: linear-gradient(to right, hwb(203 2% 68%), #877171, #375239);
         }
+        .one{
+            overflow-y: auto;
+            min-height:40vh;
+            
+        }
+
         @media (max-width: 768px) {
-    /* Adjust font size for medium screens */
-    tr, td, th {
-        font-size: 0.5rem; /* Decrease font size for medium screens */
-    }
-}
+            /* Adjust font size for medium screens */
+            tr,
+            td,
+            th {
+                font-size: 0.5rem;
+                /* Decrease font size for medium screens */
+            }
+        }
 
     </style>
 </head>
@@ -95,51 +110,51 @@
             <div class="col-lg-6">
                 <h3 class="mb-4" data-aos="fade-up" data-aos-delay="300">First year</h3>
                 <div class="row gy-4">
-                    <div class="col-lg-10" data-aos="fade-up" data-aos-delay="600">
-                        <div class="back p-4 rounded-4 shadow-effect">
+                    <div class="col-lg-10 " data-aos="fade-up" data-aos-delay="600">
+                        <div class="back  one p-4 rounded-4 shadow-effect">
                             <h5>First Semester <span class="firstyear">{{ session['user_year'] }}</span></h5>
 
 
                             <table border="1">
                                 <tr>
                                     <th>Index</th>
-                                    <th>Name</th>
+                               
                                     <th>Subject</th>
-                                    <th>marks</th>
+                                    <th>Marks</th>
                                     <th>Status</th>
                                 </tr>
+                                {% for row in one %}
                                 <tr>
-                                    <td>index</td>
-                                    <td>name</td>
-                                    <td>subject</td>
-                                    <td>marks</td>
-                                    <td>Status</td>
+                                    <td>{{ row['index_no'] }}</td>
+                                    <td>{{ row['subject'] }}</td>
+                                    <td>{{ row['marks'] }}</td>
+                                    <td>{{ row['grade'] }}</td>
                                 </tr>
-
-
+                                {% endfor %}
                             </table>
                         </div>
                     </div>
 
-                    <div class="col-lg-10" data-aos="fade-up" data-aos-delay="600">
-                        <div class="back p-4 rounded-4 shadow-effect">
+                    <div class="col-lg-10 " data-aos="fade-up" data-aos-delay="100">
+                        <div class="back  one p-4 rounded-4 shadow-effect">
                             <h5>Second Semester <span class="firstyear">{{ session['user_year'] }}</span></h5>
 
                             <table border="1">
                                 <tr>
                                     <th>Index</th>
-                                    <th>Name</th>
+                                
                                     <th>Subject</th>
-                                    <th>marks</th>
+                                    <th>Marks</th>
                                     <th>Status</th>
                                 </tr>
+                                {% for row in two %}
                                 <tr>
-                                    <td>index</td>
-                                    <td>name</td>
-                                    <td>subject</td>
-                                    <td>marks</td>
-                                    <td>Status</td>
+                                    <td>{{ row['index_no'] }}</td>
+                                    <td>{{ row['subject'] }}</td>
+                                    <td>{{ row['marks'] }}</td>
+                                    <td>{{ row['grade'] }}</td>
                                 </tr>
+                                {% endfor %}
                             </table>
                         </div>
                     </div>
@@ -151,71 +166,61 @@
             <div class="col-lg-6">
                 <h3 class="mb-4" data-aos="fade-up" data-aos-delay="300">Second Year</h3>
                 <div class="row gy-4">
-                    <div class="col-lg-10" data-aos="fade-up" data-aos-delay="600">
-                        <div class="back p-4 rounded-4 shadow-effect">
+                    <div class="col-lg-10 " data-aos="fade-up" data-aos-delay="600">
+                        <div class="back one p-4 rounded-4 shadow-effect">
                             <h5>First Semester <span class="secondyear">{{ session['user_year']+1 }}</span></h5>
 
                             <table border="1">
                                 <tr>
                                     <th>Index</th>
-                                    <th>Name</th>
+                                 
                                     <th>Subject</th>
-                                    <th>marks</th>
+                                    <th>Marks</th>
                                     <th>Status</th>
                                 </tr>
+                                {% for row in three %}
                                 <tr>
-                                    <td>index</td>
-                                    <td>name</td>
-                                    <td>subject</td>
-                                    <td>marks</td>
-                                    <td>Status</td>
+                                    <td>{{ row['index_no'] }}</td>
+                                    <td>{{ row['subject'] }}</td>
+                                    <td>{{ row['marks'] }}</td>
+                                    <td>{{ row['grade'] }}</td>
                                 </tr>
+                                {% endfor %}
                             </table>
                         </div>
                     </div>
 
-                    <div class="col-lg-10" data-aos="fade-up" data-aos-delay="600">
-                        <div class="back p-4 rounded-4 shadow-effect">
+                    <div class="col-lg-10 " data-aos="fade-up" data-aos-delay="600">
+                        <div class="back one p-4 rounded-4 shadow-effect">
                             <h5>Second Semester  <span class="secondyear">{{ session['user_year']+1 }}</span></h5>
 
                             <table border="1">
                                 <tr>
                                     <th>Index</th>
-                                    <th>Name</th>
+                                    
                                     <th>Subject</th>
-                                    <th>marks</th>
+                                    <th>Marks</th>
                                     <th>Status</th>
                                 </tr>
+                                {% for row in four %}
                                 <tr>
-                                    <td>index</td>
-                                    <td>name</td>
-                                    <td>subject</td>
-                                    <td>marks</td>
-                                    <td>Status</td>
+                                    <td>{{ row['index_no'] }}</td>
+                                    <td>{{ row['subject'] }}</td>
+                                    <td>{{ row['marks'] }}</td>
+                                    <td>{{ row['grade'] }}</td>
                                 </tr>
+                                {% endfor %}
                             </table>
                         </div>
                     </div>
-
-
-
-
-
                 </div>
             </div>
         </div>
-
-
         <div id="black">
             amaan
         </div>
-
-
-
     </div>
     <!-- //content wrapper-->
-
-   
     <script src="../static/js/bootstrap.bundle.min.js"></script>
     <script src="../static/js/aos.js"></script>
     <script src="../static/js/about.js"></script>

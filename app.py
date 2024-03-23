@@ -7,6 +7,7 @@ from flask_mail import Mail,Message
 import uuid
 import random
 import string
+from datetime import datetime  # Import datetime module
 
 
 connection=mysql.connector.connect(host="Localhost",user="root",password="",database="online_quiz_system")
@@ -153,7 +154,12 @@ def insert_data():
         s_index = request.form.get('index')
         s_name = request.form.get('name')
         semester = request.form.get('semester')
-        year = request.form.get('year')
+        registration_date = request.form.get('year')  # Get date string from form
+
+        # Parse the date string to get year and month
+        registration_date_obj = datetime.strptime(registration_date, '%Y-%m-%d')
+        year = registration_date_obj.year
+        month = registration_date_obj.month
         s_password = generate_password_hash(request.form.get('password'), method='pbkdf2:sha256')  # Hash password
         
         # Perform validation
@@ -162,8 +168,8 @@ def insert_data():
             return redirect(url_for('register'))
 
         cursor = connection.cursor()
-        sql = "INSERT INTO student_details(email,index_no,username,password,semester,year,status) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        val = (s_email, s_index, s_name, s_password, semester, year, "active")
+        sql = "INSERT INTO student_details(email,index_no,username,password,semester,year,current_year,month,current_month,status) VALUES (%s, %s, %s, %s, %s, %s, %s,%s,%s,%s)"
+        val = (s_email, s_index, s_name, s_password, semester, year,year,month,month, "active")
         cursor.execute(sql, val)
         connection.commit()
         cursor.close()
@@ -260,6 +266,7 @@ def login():
                 cursor.execute(sql, ('loggedin', s_email))
                 connection.commit()
                 cursor.close()
+                update_semester(s_email)
                 # Call get_user_data function to fetch user's year and store it in session
                 user_year = get_user_data(s_email)
                 if user_year:
@@ -277,6 +284,79 @@ def login():
     
     # If it's a GET request, render the login page
     return render_template('login.html')
+
+
+
+
+
+def update_semester(email):
+    cursor = connection.cursor()
+
+    # Retrieve user's year and semester from the student_details table using session data
+    cursor.execute("SELECT current_year, semester, current_month, year, month FROM student_details WHERE email = %s", (email,))
+    user_data = cursor.fetchone()
+
+    # Check if user_data is fetched properly
+    if user_data:
+        registeredYear = int(user_data[3])  # Convert to int
+        registeredMonth = int(user_data[4])  # Convert to int
+        current_year = datetime.now().year  # Access datetime class directly
+        current_month = datetime.now().month  # Access datetime class directly
+
+        # Calculate the total number of months passed since registration
+        total_months = (current_year - registeredYear) * 12 + (current_month - registeredMonth)
+
+        # Calculate how many intervals of six months have passed
+        intervals_passed = total_months // 6
+
+        # Check if at least one interval has passed since the last update
+        if current_year - registeredYear<=2:
+                if intervals_passed >= 1:
+                    # Update the semester for each interval
+                    for _ in range(intervals_passed):
+                        # Retrieve user's semester from the student_details table using session data
+                        cursor.execute("SELECT semester FROM student_details WHERE email = %s", (email,))
+                        user_semester = cursor.fetchone()[0]
+
+                        # Determine the next semester based on the current semester
+                        if "First Year First semester" in user_semester:
+                            next_semester = "First Year Second semester"
+                        elif "First Year Second semester" in user_semester:
+                            next_semester = "Second Year First semester"
+                        elif "Second Year First semester" in user_semester:
+                            next_semester = "Second Year Second semester"
+                        else:
+                            flash("Error: Current semester does not match any known format.", "error")
+                            return
+
+                        # Update the semester and current year/month in the database
+                        cursor.execute("UPDATE student_details SET semester = %s, current_year=%s, current_month=%s WHERE email = %s",
+                                    (next_semester, current_year, current_month, email))
+
+                        connection.commit()
+                        flash("Semester updated successfully.", "success")  # Add success message
+                else:
+                    flash("Not enough time has passed since the last update.", "error")
+
+        else:
+            # Update the semester and current year/month in the database
+            cursor.execute("UPDATE student_details SET semester = %s, current_year=%s, current_month=%s WHERE email = %s",
+                                    ("over", "over", "over", email))
+
+            connection.commit()
+            flash("Semester updated successfully.", "success")  # Add success message
+
+    else:
+        flash("User's year and semester information not found.", "error")
+
+    cursor.close()  # Close the cursor outside the loop
+
+
+
+
+
+
+
 
 
 
@@ -620,6 +700,8 @@ def quiz():
 
 @app.route('/attemptQuizSubOne', methods=['GET'])
 def attemptQuizSubOne():
+    sub1 = request.args.get('subject')
+    print("subject:",sub1)
     try:
         cursor = connection.cursor()
         sql = "SELECT semester FROM student_details WHERE email = %s"
@@ -644,7 +726,7 @@ def attemptQuizSubOne():
                     random.shuffle(all_answers)
                     questions.append(question)
                     answers.append(all_answers)
-                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers,sub=sub1)
             
             elif semester=="First Year Second semester":
                 sql = "SELECT questions, answers FROM questions WHERE subject = 'sub1' AND semester = 'First Year Second semester' ORDER BY RAND() LIMIT 10"
@@ -662,7 +744,7 @@ def attemptQuizSubOne():
                     random.shuffle(all_answers)
                     questions.append(question)
                     answers.append(all_answers)
-                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers,sub=sub1)
             
             elif semester=="Second Year First semester":
                 sql = "SELECT questions, answers FROM questions WHERE subject = 'sub1' AND semester = 'Second Year First semester' ORDER BY RAND() LIMIT 10"
@@ -680,7 +762,7 @@ def attemptQuizSubOne():
                     random.shuffle(all_answers)
                     questions.append(question)
                     answers.append(all_answers)
-                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers,sub=sub1)
             
             elif semester=="Second Year Second semester":
                 sql = "SELECT questions, answers FROM questions WHERE subject = 'sub1' AND semester = 'Second Year Second semester' ORDER BY RAND() LIMIT 10"
@@ -698,7 +780,7 @@ def attemptQuizSubOne():
                     random.shuffle(all_answers)
                     questions.append(question)
                     answers.append(all_answers)
-                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers,sub=sub1)
             
             
 
@@ -715,10 +797,47 @@ def attemptQuizSubOne():
         cursor.close()
 
 
+@app.route('/loadDefaultStudentDashContent', methods=['GET'])
+def loadDefaultStudentDashContent():
+    
+    cursor = connection.cursor(dictionary=True)
+
+    # Assuming you have a way to identify the logged-in student,
+    # let's say you have their ID stored in a session variable called student
+    student_id = session.get('student')  # You need to implement this function
+
+    # Fetch quiz details for the logged-in student based on semesters using MySQL query
+    query1 = "SELECT index_no, semester, subject, marks, grade FROM quiz_marks WHERE email = %s AND semester = %s"
+    cursor.execute(query1, (student_id, "First Year First semester"))
+    one = cursor.fetchall()
+
+    # Fetch quiz details for the logged-in student based on semesters using MySQL query
+    query2 = "SELECT index_no, semester, subject, marks, grade FROM quiz_marks WHERE email = %s AND semester = %s"
+    cursor.execute(query2, (student_id, "First Year Second semester"))
+    two = cursor.fetchall()
+
+    # Fetch quiz details for the logged-in student based on semesters using MySQL query
+    query3 = "SELECT index_no, semester, subject, marks, grade FROM quiz_marks WHERE email = %s AND semester = %s"
+    cursor.execute(query3, (student_id, "Second Year First semester"))
+    three = cursor.fetchall()
+
+     # Fetch quiz details for the logged-in student based on semesters using MySQL query
+    query4= "SELECT index_no, semester, subject, marks, grade FROM quiz_marks WHERE email = %s AND semester = %s"
+    cursor.execute(query4, (student_id, "Second Year Second semester"))
+    four = cursor.fetchall()
+    
+
+    # Close MySQL connection
+    cursor.close()
+    
+
+    # Pass the organized data to your HTML template for rendering
+    return render_template('defaultStudentDashContent.html', one=one,two=two,three=three,four =four)
 
 
 @app.route('/attemptQuizSubTwo', methods=['GET'])
 def attemptQuizSubTwo():
+    sub2 = request.args.get('subject')
     try:
         cursor = connection.cursor()
         sql = "SELECT semester FROM student_details WHERE email = %s"
@@ -743,7 +862,7 @@ def attemptQuizSubTwo():
                     random.shuffle(all_answers)
                     questions.append(question)
                     answers.append(all_answers)
-                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers,sub=sub2)
             
             elif semester=="First Year Second semester":
                 sql = "SELECT questions, answers FROM questions WHERE subject = 'sub2' AND semester = 'First Year Second semester' ORDER BY RAND() LIMIT 10"
@@ -761,7 +880,7 @@ def attemptQuizSubTwo():
                     random.shuffle(all_answers)
                     questions.append(question)
                     answers.append(all_answers)
-                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers,sub=sub2)
             
             elif semester=="Second Year First semester":
                 sql = "SELECT questions, answers FROM questions WHERE subject = 'sub2' AND semester = 'Second Year First semester' ORDER BY RAND() LIMIT 10"
@@ -779,7 +898,7 @@ def attemptQuizSubTwo():
                     random.shuffle(all_answers)
                     questions.append(question)
                     answers.append(all_answers)
-                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers,sub=sub2)
             
             elif semester=="Second Year Second semester":
                 sql = "SELECT questions, answers FROM questions WHERE subject = 'sub2' AND semester = 'Second Year Second semester' ORDER BY RAND() LIMIT 10"
@@ -797,7 +916,7 @@ def attemptQuizSubTwo():
                     random.shuffle(all_answers)
                     questions.append(question)
                     answers.append(all_answers)
-                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers,sub=sub2)
             
             
 
@@ -818,6 +937,7 @@ def attemptQuizSubTwo():
 
 @app.route('/attemptQuizSubThree', methods=['GET'])
 def attemptQuizSubThree():
+    sub3 = request.args.get('subject')
     try:
         cursor = connection.cursor()
         sql = "SELECT semester FROM student_details WHERE email = %s"
@@ -842,7 +962,7 @@ def attemptQuizSubThree():
                     random.shuffle(all_answers)
                     questions.append(question)
                     answers.append(all_answers)
-                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers,sub=sub3)
             
             elif semester=="First Year Second semester":
                 sql = "SELECT questions, answers FROM questions WHERE subject = 'sub3' AND semester = 'First Year Second semester' ORDER BY RAND() LIMIT 10"
@@ -860,7 +980,7 @@ def attemptQuizSubThree():
                     random.shuffle(all_answers)
                     questions.append(question)
                     answers.append(all_answers)
-                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers,sub=sub3)
             
             elif semester=="Second Year First semester":
                 sql = "SELECT questions, answers FROM questions WHERE subject = 'sub3' AND semester = 'Second Year First semester' ORDER BY RAND() LIMIT 10"
@@ -878,7 +998,7 @@ def attemptQuizSubThree():
                     random.shuffle(all_answers)
                     questions.append(question)
                     answers.append(all_answers)
-                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers,sub=sub3)
             
             elif semester=="Second Year Second semester":
                 sql = "SELECT questions, answers FROM questions WHERE subject = 'sub3' AND semester = 'Second Year Second semester' ORDER BY RAND() LIMIT 10"
@@ -896,7 +1016,7 @@ def attemptQuizSubThree():
                     random.shuffle(all_answers)
                     questions.append(question)
                     answers.append(all_answers)
-                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers,sub=sub3)
             
             
 
@@ -917,6 +1037,7 @@ def attemptQuizSubThree():
 
 @app.route('/attemptQuizSubFour', methods=['GET'])
 def attemptQuizSubFour():
+    sub4 = request.args.get('subject')
     try:
         cursor = connection.cursor()
         sql = "SELECT semester FROM student_details WHERE email = %s"
@@ -941,7 +1062,7 @@ def attemptQuizSubFour():
                     random.shuffle(all_answers)
                     questions.append(question)
                     answers.append(all_answers)
-                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers,sub=sub4)
             
             elif semester=="First Year Second semester":
                 sql = "SELECT questions, answers FROM questions WHERE subject = 'sub4' AND semester = 'First Year Second semester' ORDER BY RAND() LIMIT 10"
@@ -959,7 +1080,7 @@ def attemptQuizSubFour():
                     random.shuffle(all_answers)
                     questions.append(question)
                     answers.append(all_answers)
-                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers,sub=sub4)
             
             elif semester=="Second Year First semester":
                 sql = "SELECT questions, answers FROM questions WHERE subject = 'sub4' AND semester = 'Second Year First semester' ORDER BY RAND() LIMIT 10"
@@ -977,7 +1098,7 @@ def attemptQuizSubFour():
                     random.shuffle(all_answers)
                     questions.append(question)
                     answers.append(all_answers)
-                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers,sub=sub4)
             
             elif semester=="Second Year Second semester":
                 sql = "SELECT questions, answers FROM questions WHERE subject = 'sub4' AND semester = 'Second Year Second semester' ORDER BY RAND() LIMIT 10"
@@ -995,7 +1116,7 @@ def attemptQuizSubFour():
                     random.shuffle(all_answers)
                     questions.append(question)
                     answers.append(all_answers)
-                return render_template('attemptQuiz.html', questions=questions, answers=answers)
+                return render_template('attemptQuiz.html', questions=questions, answers=answers,sub=sub4)
             
             
 
@@ -1016,6 +1137,7 @@ def attemptQuizSubFour():
 @app.route('/quizSubmit', methods=['POST'])
 def quizSubmit():
     # Initialize variables to store the score and total questions
+    subject=request.form.get('subject')
     score = 0
     total_questions = 10  # Total questions are always 10
     questions = [request.form.get('question{}'.format(i+1)) for i in range(total_questions)]
@@ -1046,9 +1168,58 @@ def quizSubmit():
 
     # Calculate the percentage
     percentage = (score / total_questions) * 100
-
+    insertMarks(score,subject)
     # Render the result.html template with the score and percentage
     return render_template('result.html', score=score, percentage=percentage)
+
+
+def insertMarks(score,subject):
+    print("in")
+    try:
+        cursor = connection.cursor()
+
+        # Retrieve email of the logged-in user
+        email = session.get('student')
+
+        # Retrieve index number using email
+        cursor.execute("SELECT index_no, semester FROM student_details WHERE email = %s", (email,))
+        rows = cursor.fetchall()
+        if rows:
+            index_no = rows[0][0]  # Assuming only one row is expected
+            semester = rows[0][1]
+        else:
+            flash("User not found.", "error")
+            return redirect(url_for('viewQuiz'))
+        
+       
+           
+        cursor.execute("SELECT quiz_id FROM quiz WHERE semester = %s AND subject = %s", (semester, subject))
+        print(semester)
+        print(subject)
+        rows = cursor.fetchall()
+        if rows:
+            quiz_id = rows[0][0]  # Assuming only one row is expected
+        else:
+            flash("Quiz not found for this semester and subject.", "error")
+            return redirect(url_for('viewQuiz'))
+            
+        # Calculate marks
+        marks = score * 10
+        grade = 'W' if marks < 35 else 'S' if marks < 55 else 'C' if marks < 65 else 'B' if marks < 75 else 'A'
+        
+        # Insert marks into the database
+        sql_marks = "INSERT INTO quiz_marks(email, index_no, semester, subject, marks, grade, quiz_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        cursor.execute(sql_marks, (email, index_no, semester, subject, marks, grade, quiz_id))
+
+        connection.commit()
+            
+    except Exception as e:
+        flash("An error occurred while inserting marks.", "error")
+        return redirect(url_for('viewQuiz'))
+    finally:
+        cursor.close()
+
+
 
 
 

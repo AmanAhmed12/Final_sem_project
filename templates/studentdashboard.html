@@ -74,6 +74,16 @@
                     </a>
                 </li>
 
+                
+                <li>
+                    <a href="#" onclick="loadQuizGuidelines();">
+                        <span class="icon">
+                            <ion-icon name="document-text"></ion-icon>
+                        </span>
+                        <span class="title">Generate Report</span>
+                    </a>
+                </li>
+
                 <li>
                     <a href="/ProfileUpdate">
                         <span class="icon">
@@ -114,7 +124,7 @@
             </div>
 
             <div id="content" style="height: 100vh; width:10vw; border: 0px;">
-                <iframe id="content-iframe" src="/defaultStuDashContent" style="height: 100vh; width:100vw; border: 0px;"></iframe>
+                <iframe id="content-iframe" src="/loadDefaultStudentDashContent" style="height: 100vh; width:100vw; border: 0px;"></iframe>
 
             </div>
 
@@ -130,7 +140,7 @@
 
         function loadDefaultStuDashboard() {
             // Load the default content into the 'content' div
-            document.getElementById('content').innerHTML = '<iframe src="/defaultStuDashContent" frameborder="0" style="width: 100vw; height: 100%;"></iframe>';
+            document.getElementById('content').innerHTML = '<iframe src="/loadDefaultStudentDashContent" frameborder="0" style="width: 100vw; height: 100%;"></iframe>';
         }
 
        
