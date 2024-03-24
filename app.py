@@ -121,6 +121,11 @@ def attemptQuiz():
     return render_template('attemptQuiz.html')
 
 
+@app.route('/loadReport')
+def loadReport():
+    return render_template('report.html')
+
+
 
 # display year when student login
 def get_user_data(email):
@@ -326,8 +331,8 @@ def update_semester(email):
                         elif "Second Year First semester" in user_semester:
                             next_semester = "Second Year Second semester"
                         else:
-                            flash("Error: Current semester does not match any known format.", "error")
-                            return
+                            
+                            return None
 
                         # Update the semester and current year/month in the database
                         cursor.execute("UPDATE student_details SET semester = %s, current_year=%s, current_month=%s WHERE email = %s",
@@ -1218,6 +1223,45 @@ def insertMarks(score,subject):
         return redirect(url_for('viewQuiz'))
     finally:
         cursor.close()
+
+
+
+
+@app.route('/generateQuizReport',  methods=['GET'])
+def generateQuizReport():
+    cursor = connection.cursor(dictionary=True)
+
+    # Assuming you have a way to identify the logged-in student,
+    # let's say you have their ID stored in a session variable called student
+    student_id = session.get('student')  # You need to implement this function
+
+    # Fetch quiz details for the logged-in student based on semesters using MySQL query
+    query1 = "SELECT index_no, semester, subject, marks, grade FROM quiz_marks WHERE email = %s AND semester = %s"
+    cursor.execute(query1, (student_id, "First Year First semester"))
+    one = cursor.fetchall()
+
+    # Fetch quiz details for the logged-in student based on semesters using MySQL query
+    query2 = "SELECT index_no, semester, subject, marks, grade FROM quiz_marks WHERE email = %s AND semester = %s"
+    cursor.execute(query2, (student_id, "First Year Second semester"))
+    two = cursor.fetchall()
+
+    # Fetch quiz details for the logged-in student based on semesters using MySQL query
+    query3 = "SELECT index_no, semester, subject, marks, grade FROM quiz_marks WHERE email = %s AND semester = %s"
+    cursor.execute(query3, (student_id, "Second Year First semester"))
+    three = cursor.fetchall()
+
+     # Fetch quiz details for the logged-in student based on semesters using MySQL query
+    query4= "SELECT index_no, semester, subject, marks, grade FROM quiz_marks WHERE email = %s AND semester = %s"
+    cursor.execute(query4, (student_id, "Second Year Second semester"))
+    four = cursor.fetchall()
+
+
+    # Close MySQL connection
+    cursor.close()
+    
+
+    # Pass the organized data to your HTML template for rendering
+    return render_template('report.html', one=one,two=two,three=three,four =four)
 
 
 

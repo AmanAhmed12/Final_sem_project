@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Report</title>
+   
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 5% 10%;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .generate-pdf {
+            display: block;
+            width: 150px;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .generate-pdf:hover {
+            background-color: #45a049;
+        }
+
+        @media screen and (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            .generate-pdf {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Quiz Report</h1>
+
+        <h2>First Year First Semester</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Index No</th>
+                    <th>Subject</th>
+                    <th>Marks</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in one %}
+                <tr>
+                    <td>{{ row['index_no'] }}</td>
+                    <td>{{ row['subject'] }}</td>
+                    <td>{{ row['marks'] }}</td>
+                    <td>{{ row['grade'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>First Year Second Semester</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Index No</th>
+                    <th>Subject</th>
+                    <th>Marks</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in two %}
+                <tr>
+                    <td>{{ row['index_no'] }}</td>
+                    <td>{{ row['subject'] }}</td>
+                    <td>{{ row['marks'] }}</td>
+                    <td>{{ row['grade'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
+        <h2>Second Year First Semester</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Index No</th>
+                    <th>Subject</th>
+                    <th>Marks</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in three %}
+                <tr>
+                    <td>{{ row['index_no'] }}</td>
+                    <td>{{ row['subject'] }}</td>
+                    <td>{{ row['marks'] }}</td>
+                    <td>{{ row['grade'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
+        <h2>Second Year Second Semester</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Index No</th>
+                    <th>Subject</th>
+                    <th>Marks</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in four %}
+                <tr>
+                    <td>{{ row['index_no'] }}</td>
+                    <td>{{ row['subject'] }}</td>
+                    <td>{{ row['marks'] }}</td>
+                    <td>{{ row['grade'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
+        <!-- Button to generate PDF -->
+        <button class="generate-pdf" onclick="generatePDF()">Generate PDF <i class="fas fa-file-pdf"></i></button>
+    </div>
+    <script>
+        function generatePDF() {
+           window.print()
+        }
+    </script>
+
+</body>
+
+</html>
