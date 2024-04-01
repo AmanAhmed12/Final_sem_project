@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amaan Ahmed</title>
+    <title>Administrator</title>
     <link rel="stylesheet" href="../static/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/css/aos.css">
     <link rel="stylesheet" href="../static/css/line-awesome.min.css">
@@ -47,15 +47,21 @@
             color: black;
         }
 
+        
         tr,
         td,
         th {
             padding: 5%;
             margin: 2%;
             font-size: 1rem;
-            color: black;
+            color: white;
+            resize: both;
 
 
+        }
+       
+        td{
+            font-size: 0.7rem;
         }
 
         table {
@@ -67,8 +73,8 @@
             background: linear-gradient(to right, hwb(203 2% 68%), #877171, #375239);
         }
         .one{
-            overflow-y: auto;
-            min-height:40vh;
+            overflow-y: scroll;
+           height:40vh;
             
         }
 
@@ -118,12 +124,14 @@
                                     <th>marks</th>
                                     <th>Status</th>
                                 </tr>
+                                {% for item in one %}
                                 <tr>
-                                    <td>index</td>
-                                    <td>subject</td>
-                                    <td>marks</td>
-                                    <td>Status</td>
+                                    <td>{{ item.index_no }}</td>
+                                    <td>{{ item.subject }}</td>
+                                    <td>{{ item.marks }}</td>
+                                    <td>{{ item.grade }}</td>
                                 </tr>
+                                {% endfor %}
 
 
                             </table>
@@ -142,13 +150,14 @@
                                     <th>marks</th>
                                     <th>Status</th>
                                 </tr>
+                                {% for item in two %}
                                 <tr>
-                                    <td>index</td>
-                                   
-                                    <td>subject</td>
-                                    <td>marks</td>
-                                    <td>Status</td>
+                                    <td>{{ item.index_no }}</td>
+                                    <td>{{ item.subject }}</td>
+                                    <td>{{ item.marks }}</td>
+                                    <td>{{ item.grade }}</td>
                                 </tr>
+                                {% endfor %}
                             </table>
                         </div>
                     </div>
@@ -172,13 +181,14 @@
                                     <th>marks</th>
                                     <th>Status</th>
                                 </tr>
+                                {% for item in three %}
                                 <tr>
-                                    <td>index</td>
-                                   
-                                    <td>subject</td>
-                                    <td>marks</td>
-                                    <td>Status</td>
+                                    <td>{{ item.index_no }}</td>
+                                    <td>{{ item.subject }}</td>
+                                    <td>{{ item.marks }}</td>
+                                    <td>{{ item.grade }}</td>
                                 </tr>
+                                {% endfor %}
                             </table>
                         </div>
                     </div>
@@ -195,13 +205,14 @@
                                     <th>marks</th>
                                     <th>Status</th>
                                 </tr>
+                                {% for item in four %}
                                 <tr>
-                                    <td>index</td>
-                                   
-                                    <td>subject</td>
-                                    <td>marks</td>
-                                    <td>Status</td>
+                                    <td>{{ item.index_no }}</td>
+                                    <td>{{ item.subject }}</td>
+                                    <td>{{ item.marks }}</td>
+                                    <td>{{ item.grade }}</td>
                                 </tr>
+                                {% endfor %}
                             </table>
                         </div>
                     </div>
@@ -215,9 +226,6 @@
         </div>
 
 
-        <div id="black">
-            amaan
-        </div>
 
 
 

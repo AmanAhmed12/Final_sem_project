@@ -60,9 +60,6 @@
                     </a>
                 </li>
 
-              
-
-             
                 
 
                 <li>
@@ -71,6 +68,15 @@
                             <ion-icon name="document-text"></ion-icon>
                         </span>
                         <span class="title">Guidelines</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" onclick="loadQuizAnalysis();">
+                        <span class="icon">
+                            <ion-icon name="bar-chart"></ion-icon>
+                        </span>
+                        <span class="title">Quiz Analysis</span>
                     </a>
                 </li>
 
@@ -152,6 +158,11 @@
         function loadQuizGuidelines() {
             // Load dashboard.html into the content div
             document.getElementById("content").innerHTML = '<iframe src="/loadGuidelines" frameborder="0" style="width: 100vw; height: 100%;"></iframe>';
+        }
+
+        function loadQuizAnalysis() {
+            // Load dashboard.html into the content div
+            document.getElementById("content").innerHTML = '<iframe src="/loadAnalysis" frameborder="0" style="width: 100vw; height: 100%;"></iframe>';
         }
 
         function loadReport() {

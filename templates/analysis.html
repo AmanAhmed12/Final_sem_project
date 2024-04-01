@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subject vs Marks Analysis</title>
+  <!-- Include Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Set max-width and max-height for canvas */
+    canvas {
+      width: 500px; /* Adjust as needed */
+      height: 400px; /* Adjust as needed */
+    }
+
+    /* Flex container for each row */
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 5%;
+      
+     
+    }
+
+    /* Flex item for each canvas */
+    .canvas-container {
+      margin: 10px; /* Adjust spacing between canvases */
+      margin-right: 5%;
+      margin-left: 3%;
+    }
+  </style>
+</head>
+<body>
+   
+<!-- Row for the first two canvases -->
+<div class="row">
+  <div class="canvas-container">
+    <h1>First Year First Semester</h1>
+    <canvas id="chartFirstYearFirstSemester"></canvas>
+  </div>
+  <div class="canvas-container">
+    <h1>Second Year First Semester</h1>
+    <canvas id="chartSecondYearFirstSemester"></canvas>
+  </div>
+  
+</div>
+
+<!-- Row for the last two canvases -->
+<div class="row">
+    <div class="canvas-container">
+        <h1>First Year Second Semester</h1>
+        <canvas id="chartFirstYearSecondSemester"></canvas>
+      </div>
+ 
+  <div class="canvas-container">
+    <h1>Second Year Second Semester</h1>
+    <canvas id="chartSecondYearSecondSemester"></canvas>
+  </div>
+</div>
+
+<script>
+  // Extract data from Flask passed variables
+  var oneData = JSON.parse('{{ one | tojson | safe }}');
+  var twoData = JSON.parse('{{ two | tojson | safe }}');
+  var threeData = JSON.parse('{{ three | tojson | safe }}');
+  var fourData = JSON.parse('{{ four | tojson | safe }}');
+
+  // Combine all data into one array
+  var allData = [oneData, twoData, threeData, fourData];
+
+  // Create charts for each semester
+  allData.forEach(function(semesterData, index) {
+    var canvasId = "chartFirstYearFirstSemester"; // Default canvas ID
+    if (index == 1) {
+      canvasId = "chartFirstYearSecondSemester";
+    } else if (index == 2) {
+      canvasId = "chartSecondYearFirstSemester";
+    } else if (index == 3) {
+      canvasId = "chartSecondYearSecondSemester";
+    }
+
+    var ctx = document.getElementById(canvasId).getContext('2d');
+
+    // Extract subjects and marks for the current semester
+    var semesterSubjects = semesterData.map(function(data) {
+      return data.subject;
+    });
+    var semesterMarks = semesterData.map(function(data) {
+      return data.marks;
+    });
+
+    // Create a chart for the current semester
+    var myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: semesterSubjects,
+        datasets: [{
+          label: "Semester " + (index + 1),
+          data: semesterMarks,
+          backgroundColor: 'rgba(255, 99, 132, 0.2)', // You can set a specific color
+          borderColor: 'rgba(255, 99, 132, 1)', // For border color
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+  });
+</script>
+</body>
+</html>

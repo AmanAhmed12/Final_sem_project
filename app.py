@@ -8,6 +8,7 @@ import uuid
 import random
 import string
 from datetime import datetime  # Import datetime module
+import matplotlib.pyplot as plt
 
 
 connection=mysql.connector.connect(host="Localhost",user="root",password="",database="online_quiz_system")
@@ -1262,6 +1263,79 @@ def generateQuizReport():
 
     # Pass the organized data to your HTML template for rendering
     return render_template('report.html', one=one,two=two,three=three,four =four)
+
+
+#default admin dashboard
+@app.route('/loadDefaultAdminDashContent',  methods=['GET'])
+def loadDefaultAdminDashContent():
+    cursor = connection.cursor(dictionary=True)
+
+    # Fetch quiz details for the logged-in student based on semesters using MySQL query
+    query1 = "SELECT index_no,subject, marks, grade FROM quiz_marks WHERE semester = %s"
+    cursor.execute(query1, ("First Year First semester",))
+    one = cursor.fetchall()
+
+    # Fetch quiz details for the logged-in student based on semesters using MySQL query
+    query2 = "SELECT index_no,subject, marks, grade FROM quiz_marks WHERE semester = %s"
+    cursor.execute(query2, ("First Year Second semester",))
+    two = cursor.fetchall()
+
+    # Fetch quiz details for the logged-in student based on semesters using MySQL query
+    query3 = "SELECT index_no, subject, marks, grade FROM quiz_marks WHERE semester = %s"
+    cursor.execute(query3, ("Second Year First semester",))
+    three = cursor.fetchall()
+
+     # Fetch quiz details for the logged-in student based on semesters using MySQL query
+    query4= "SELECT index_no,subject, marks, grade FROM quiz_marks WHERE semester = %s"
+    cursor.execute(query4, ("Second Year Second semester",))
+    four = cursor.fetchall()
+    
+
+    # Close MySQL connection
+    cursor.close()
+    
+
+    # Pass the organized data to your HTML template for rendering
+    return render_template('defaultAdminDashContent.html', one=one,two=two,three=three,four =four)
+
+
+
+@app.route('/loadAnalysis',  methods=['GET'])
+def loadAnalysis():
+     
+    cursor = connection.cursor(dictionary=True)
+
+    # Assuming you have a way to identify the logged-in student,
+    # let's say you have their ID stored in a session variable called student
+    student_id = session.get('student')  # You need to implement this function
+
+    # Fetch quiz details for the logged-in student based on semesters using MySQL query
+    query1 = "SELECT index_no, semester, subject, marks, grade FROM quiz_marks WHERE email = %s AND semester = %s"
+    cursor.execute(query1, (student_id, "First Year First semester"))
+    one = cursor.fetchall()
+
+    # Fetch quiz details for the logged-in student based on semesters using MySQL query
+    query2 = "SELECT index_no, semester, subject, marks, grade FROM quiz_marks WHERE email = %s AND semester = %s"
+    cursor.execute(query2, (student_id, "First Year Second semester"))
+    two = cursor.fetchall()
+
+    # Fetch quiz details for the logged-in student based on semesters using MySQL query
+    query3 = "SELECT index_no, semester, subject, marks, grade FROM quiz_marks WHERE email = %s AND semester = %s"
+    cursor.execute(query3, (student_id, "Second Year First semester"))
+    three = cursor.fetchall()
+
+     # Fetch quiz details for the logged-in student based on semesters using MySQL query
+    query4= "SELECT index_no, semester, subject, marks, grade FROM quiz_marks WHERE email = %s AND semester = %s"
+    cursor.execute(query4, (student_id, "Second Year Second semester"))
+    four = cursor.fetchall()
+    
+
+    # Close MySQL connection
+    cursor.close()
+    
+
+    # Pass the organized data to your HTML template for rendering
+    return render_template('analysis.html', one=one,two=two,three=three,four =four)
 
 
 
