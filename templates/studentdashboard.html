@@ -130,9 +130,24 @@
             </div>
 
             <div id="content" style="height: 100vh; width:10vw; border: 0px;">
-                <iframe id="content-iframe" src="/loadDefaultStudentDashContent" style="height: 100vh; width:100vw; border: 0px;"></iframe>
-
+                {% if request.args.get('subject') == 'sub1' %}
+                    <iframe id="content-iframe" src="/attemptQuizSubOne" style="height: 100vh; width:100vw; border: 0px;"></iframe>
+                {% elif request.args.get('subject') == 'sub2' %}
+                  
+                    <iframe id="content-iframe" src="/attemptQuizSubTwo" style="height: 100vh; width:100vw; border: 0px;"></iframe>
+                {% elif request.args.get('subject') == 'sub3' %}
+                <iframe id="content-iframe" src="/attemptQuizSubThree" style="height: 100vh; width:100vw; border: 0px;"></iframe>
+                {% elif request.args.get('subject') == 'sub4' %}
+                <iframe id="content-iframe" src="/attemptQuizSubFour" style="height: 100vh; width:100vw; border: 0px;"></iframe>
+                {% else %}
+                    <iframe id="content-iframe" src="/loadDefaultStudentDashContent" style="height: 100vh; width:100vw; border: 0px;"></iframe>
+                    <!-- Handle other cases -->
+                {% endif %}
             </div>
+            
+            
+            
+            
 
 
         </div>
@@ -140,6 +155,7 @@
 
 
 
+   
 
       <!-- =========== Scripts =========  -->
     <script>

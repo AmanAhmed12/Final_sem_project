@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash,session
 from werkzeug.security import generate_password_hash,check_password_hash
-from mysql.connector.errors import IntegrityError
 import mysql.connector
+from mysql.connector import Error
 import traceback
 from flask_mail import Mail,Message   
 import uuid
@@ -9,6 +9,9 @@ import random
 import string
 from datetime import datetime  # Import datetime module
 import matplotlib.pyplot as plt
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required
+from mysql.connector.errors import IntegrityError
+
 
 
 connection=mysql.connector.connect(host="Localhost",user="root",password="",database="online_quiz_system")
@@ -20,6 +23,7 @@ else:
     print("Failed to connect...")
 
 app = Flask(__name__)
+
 # Configure Flask-Mail settings
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
@@ -126,6 +130,36 @@ def attemptQuiz():
 def loadReport():
     return render_template('report.html')
 
+
+@app.route('/quiz/<path:url>')
+def load_quiz(url):
+    # Extract semester, subject, and quiz_id from the URL
+    parts = url.split('/')
+    if len(parts) >= 4:
+        semester = parts[1]
+        subject = parts[2]
+        quiz_id = parts[3]
+        
+        if 'user_type' in session and session['user_type'] == 'student' and subject == "sub1":
+            # If logged in and subject is "sub1", redirect to stuLogin with iframe_url parameter
+             return redirect(url_for('stuLogin', subject='sub1'))
+        
+        elif 'user_type' in session and session['user_type'] == 'student' and subject == "sub2":
+            return redirect(url_for('stuLogin', subject='sub2'))
+        
+        elif 'user_type' in session and session['user_type'] == 'student' and subject == "sub3":
+            return redirect(url_for('stuLogin', subject='sub3'))
+        
+        elif 'user_type' in session and session['user_type'] == 'student' and subject == "sub4":
+            return redirect(url_for('stuLogin', subject='sub4'))     
+        else:
+            # If not logged in or subject is not "sub1", render the login.html page
+            return render_template('login.html', semester=semester, subject=subject, quiz_id=quiz_id)
+            
+            
+    else:
+        # Handle invalid URLs
+        return "Invalid URL"
 
 
 # display year when student login
@@ -582,9 +616,14 @@ def quizGenerate():
         # Commit the transaction
         connection.commit()
         cursor.close()
+        base_url = " https://5be6-43-252-15-36.ngrok-free.app/quiz/"
+        quiz_url = f"{base_url}{year.replace(' ', '')}/{semester.replace(' ', '')}/{subject_name}/{quiz_id}"
+        
+        
 
         flash("Quiz Generated Successfully!", "success")
-        return redirect(url_for('generateQuiz'))  # Redirect to a suitable view after quiz generation
+        return render_template('generateQuiz.html', quiz_url=quiz_url)
+
 
     except IntegrityError as e:
         flash("Quiz details already exist or Integrity error!", "error")
@@ -595,7 +634,6 @@ def quizGenerate():
         return redirect(url_for('generateQuiz'))
 
 
-    
 
 #view quiz
 @app.route('/viewQuiz')
@@ -707,7 +745,7 @@ def quiz():
 @app.route('/attemptQuizSubOne', methods=['GET'])
 def attemptQuizSubOne():
     sub1 = request.args.get('subject')
-    print("subject:",sub1)
+   
     try:
         cursor = connection.cursor()
         sql = "SELECT semester FROM student_details WHERE email = %s"
@@ -907,6 +945,7 @@ def attemptQuizSubTwo():
                 return render_template('attemptQuiz.html', questions=questions, answers=answers,sub=sub2)
             
             elif semester=="Second Year Second semester":
+                print("aman")
                 sql = "SELECT questions, answers FROM questions WHERE subject = 'sub2' AND semester = 'Second Year Second semester' ORDER BY RAND() LIMIT 10"
                 cursor.execute(sql)
                 question_data = cursor.fetchall()
@@ -1336,7 +1375,7 @@ def loadAnalysis():
 
     # Pass the organized data to your HTML template for rendering
     return render_template('analysis.html', one=one,two=two,three=three,four =four)
-
+  
 
 
 

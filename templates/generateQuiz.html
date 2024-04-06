@@ -42,6 +42,14 @@
 
 
 <body  data-bs-spy="scroll">
+    <div class="container">
+        {% if quiz_url %}
+        <h1>Generated Quiz</h1>
+        <p>Here is the link to the generated quiz:</p>
+        <p><a href="/quiz/2022FirstYearFirstsemester/sad/Foof">{{ quiz_url }}</a></p>
+        {% endif %}
+    
+    </div>
 
    
         <div class="flexed">
