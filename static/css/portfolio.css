@@ -223,7 +223,7 @@ color:#fff;
 
     /*contact*/
     #contact .form-control{
-        background-color: var(--color-base);
+        background-color: #255e94;
         border-color: var(--color-base);
         color:var(--color-body);
     }
@@ -241,19 +241,14 @@ color:#fff;
         height: 44px;
     }
 
-    /*social icons*/
-
-    .social-icons{
-
-    }
-
+    
     .social-icons a{
         width:40px;
         height: 40px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background-color: var(--color-base);
+        background-color: #365d81;
         border-radius: 100px;
         font-size: 24px;
     }
