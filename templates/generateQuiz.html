@@ -37,19 +37,76 @@
     margin-bottom: 2%;
    }
 
+   .container {
+    position: absolute;
+    top: 50px;
+    left: 0px;
+    width:70vw;
+    padding: 20px;
+    border: 2px solid #007bff; /* Blue border */
+    border-radius: 10px;
+    background-color: #f0f8ff; /* Light blue background */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+    margin-left: 4%;
+ 
+   
+}
+
+h1.form-control {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+p.form-control {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #666;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+.flexed{
+    margin-top: 18%;
+}
+
+@media (max-width: 768px) {
+            .container {
+                position: static;
+                width: auto;
+                margin: 0;
+                border: 2px solid #007bff; /* Blue border */
+                padding: 0;
+                background-color: #f0f8ff; /* Light blue background */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+            }
+        }
+
+
    </style>
 </head>
 
 
 <body  data-bs-spy="scroll">
     <div class="container">
+        <h1 class="form-control">Generated Quiz</h1>
+        <p class="form-control">Here is the link to the generated quiz:</p>
         {% if quiz_url %}
-        <h1>Generated Quiz</h1>
-        <p>Here is the link to the generated quiz:</p>
-        <p><a href="/quiz/2022FirstYearFirstsemester/sad/Foof">{{ quiz_url }}</a></p>
+        <p class="form-control">
+            <a href="/quiz/2022FirstYearFirstsemester/sad/Foof" id="quizLink">{{ quiz_url }}</a>
+            <span class="copy-icon" onclick="copyToClipboard()">
+                <i class="far fa-copy"></i>
+            </span>
+        </p>
         {% endif %}
-    
     </div>
+    
 
    
         <div class="flexed">
@@ -158,9 +215,23 @@
                 </form>
             </div>
         </div>
-   
 
-   
+
+
+
+        <script>
+            function copyToClipboard() {
+                var quizLink = document.getElementById("quizLink");
+                var range = document.createRange();
+                range.selectNode(quizLink);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand("copy");
+                window.getSelection().removeAllRanges();
+                // Optionally, you can show a tooltip or alert message to indicate that the link has been copied
+                alert("Link copied to clipboard!");
+            }
+        </script>
  
     <script src="./static/js/bootstrap.bundle.min.js"></script>
     <script src="./static/js/aos.js"></script>
