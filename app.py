@@ -1409,6 +1409,53 @@ def loadOverAllAnalysis():
 
 
 
+# default admin dashboard
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    no_results = False  # Initialize the no_results flag
+
+    if request.method == 'GET':
+        search_data = request.args.get('search_data')
+
+        cursor = connection.cursor(dictionary=True)
+
+        # Fetch quiz details for the logged-in student based on semesters using MySQL query
+        query1 = "SELECT index_no, subject, marks, grade FROM quiz_marks WHERE semester = %s AND index_no = %s or subject = %s"
+        cursor.execute(query1, ("First Year First semester", search_data, search_data))
+        one = cursor.fetchall()
+
+        # Fetch quiz details for the logged-in student based on semesters using MySQL query
+        query2 = "SELECT index_no, subject, marks, grade FROM quiz_marks WHERE semester = %s AND index_no = %s or subject = %s"
+        cursor.execute(query2, ("First Year Second semester", search_data, search_data))
+        two = cursor.fetchall()
+
+        # Fetch quiz details for the logged-in student based on semesters using MySQL query
+        query3 = "SELECT index_no, subject, marks, grade FROM quiz_marks WHERE semester = %s AND index_no = %s or subject = %s"
+        cursor.execute(query3, ("Second Year First semester", search_data, search_data))
+        three = cursor.fetchall()
+
+        # Fetch quiz details for the logged-in student based on semesters using MySQL query
+        query4 = "SELECT index_no, subject, marks, grade FROM quiz_marks WHERE semester = %s AND index_no = %s or subject = %s"
+        cursor.execute(query4, ("Second Year Second semester", search_data, search_data))
+        four = cursor.fetchall()
+
+        # Close MySQL connection
+        cursor.close()
+
+        # Check if any of the fetched results are empty
+        if not (one and two and three and four):
+            # Set the no_results flag to True
+            no_results = True
+            return render_template('defaultAdminDashContent.html', no_results=no_results)
+
+        else :
+            # Pass the organized data and the no_results flag to your HTML template for rendering
+            return render_template('defaultAdminDashContent.html', one=one, two=two, three=three, four=four, no_results=no_results)
+       
+
+    # Handling GET requests
+    return render_template('defaultAdminDashContent.html', one=[], two=[], three=[], four=[], no_results=no_results)
+
 
   
 

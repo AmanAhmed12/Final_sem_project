@@ -230,6 +230,12 @@
     </div>
     <!-- //content wrapper-->
 
+    {% if no_results %}
+    <script>
+        alert("No results matched your search query.");
+    </script>
+    {% endif %}
+
     <script>
         var firstYear = new Date().getFullYear() - 1; // Subtracting 1 years from the current year
         var elementsfirst = document.getElementsByClassName("firstyear");
