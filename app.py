@@ -1375,6 +1375,41 @@ def loadAnalysis():
 
     # Pass the organized data to your HTML template for rendering
     return render_template('analysis.html', one=one,two=two,three=three,four =four)
+
+
+import json
+
+@app.route('/loadOverAllAnalysis',  methods=['GET'])
+def loadOverAllAnalysis():
+    cursor = connection.cursor(dictionary=True)
+
+    # List of semesters and subjects
+    semesters = ["First Year First semester", "First Year Second semester", "Second Year First semester", "Second Year Second semester"]
+    subjects = ["sub1", "sub2", "sub3", "sub4"]  # Update with your actual subject names
+
+    # Dictionary to store failure counts for each subject in each semester
+    failure_counts = {semester: {} for semester in semesters}
+
+    # Iterate through each semester
+    for semester in semesters:
+        for subject in subjects:
+            query = "SELECT COUNT(*) AS count FROM quiz_marks WHERE semester = %s AND subject = %s AND (grade = 'W' OR marks < %s)"
+            cursor.execute(query, (semester, subject, 35))
+            result = cursor.fetchone()
+            failure_counts[semester][subject] = result["count"]
+
+    cursor.close()
+
+    # Convert the failure_counts dictionary to JSON format
+    failure_counts_json = json.dumps(failure_counts)
+    print(failure_counts_json)
+
+    # Pass the failure counts JSON to the HTML template for rendering
+    return render_template('overAllAnalysis.html', failure_counts_json=failure_counts_json)
+
+
+
+
   
 
 

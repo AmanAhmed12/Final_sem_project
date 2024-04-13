@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subject vs Marks Analysis</title>
+  <!-- Include Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Set max-width and max-height for canvas */
+    canvas {
+      width: 500px; /* Adjust as needed */
+      height: 400px; /* Adjust as needed */
+    }
+
+    /* Flex container for each row */
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 5%;
+    }
+
+    /* Flex item for each canvas */
+    .canvas-container {
+      margin: 10px; /* Adjust spacing between canvases */
+      margin-right: 5%;
+      margin-left: 3%;
+    }
+  </style>
+</head>
+<body>
+   
+<!-- Row for the first two canvases -->
+<div class="row">
+  <div class="canvas-container">
+    <h1>First Year First semester</h1>
+    <canvas id="chartFirst_Year_First_semester"></canvas>
+  </div>
+  <div class="canvas-container">
+    <h1>Second Year First semester</h1>
+    <canvas id="chartSecond_Year_First_semester"></canvas>
+  </div>
+</div>
+
+<!-- Row for the last two canvases -->
+<div class="row">
+    <div class="canvas-container">
+        <h1>First Year Second semester</h1>
+        <canvas id="chartFirst_Year_Second_semester"></canvas>
+      </div>
+  <div class="canvas-container">
+    <h1>Second Year Second semester</h1>
+    <canvas id="chartSecond_Year_Second_semester"></canvas>
+  </div>
+</div>
+
+
+<script>
+    var failureCounts = JSON.parse('{{ failure_counts_json | safe }}');
+    var semesters = Object.keys(failureCounts);
+    
+    
+    semesters.forEach(function(semester) {
+      var canvasId = "chart" + semester.replace(/ /g, "_"); // Replace spaces with underscores for canvas id
+      var ctx = document.getElementById(canvasId).getContext('2d');
+  
+      var data = {
+        labels: Object.keys(failureCounts[semester]),
+        datasets: [{
+          label: 'Failure Count',
+          data: Object.values(failureCounts[semester]),
+          backgroundColor: 'rgba(54, 162, 235, 0.2)', // You can set a specific color
+          borderColor: 'rgba(30, 144, 255, 1)', // For border color
+          borderWidth: 1
+        }]
+      };
+  
+      var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    });
+  </script>
+  
+
+  
+</body>
+</html>

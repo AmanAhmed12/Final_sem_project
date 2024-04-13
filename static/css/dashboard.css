@@ -57,6 +57,8 @@ body {
   border-bottom-left-radius: 30px;
 }
 
+
+
 .navigation ul li:hover,
 .navigation ul li.hovered {
   background-color: var(--white);

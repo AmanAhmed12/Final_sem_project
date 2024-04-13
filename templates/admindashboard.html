@@ -10,19 +10,26 @@
     <link rel="stylesheet" href="../static/css/dashboard.css">
 
     <style>
+       @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Jersey+15&display=swap');
         #userlogo {
 
-            height: 90%;
-            width: 90%;
+            height: 24vh;
+            width: 50%;
             border-radius: 50%;
+            margin-left: 22%;
         }
 
         #list {
             margin-top: 10%;
         }
+        
 
         .title {
+            
             font-weight: bold;
+        }
+        .search{
+            margin-top: 2%;
         }
     </style>
 </head>
@@ -34,10 +41,11 @@
             <ul>
                 <li id="list">
                     <a href="#">
-                        <span class="icon">
+                        
                             <img src="../static/images/userlogo.png" id="userlogo" />
-                        </span>
-                        <span class="title">QUIZ__TIME</span>
+                       
+                       
+
                     </a>
                 </li>
 
@@ -81,6 +89,15 @@
                 </li>
 
                 <li>
+                    <a href="#" onclick="loadQuizAnalysis();">
+                        <span class="icon">
+                            <ion-icon name="bar-chart"></ion-icon>
+                        </span>
+                        <span class="title">Quiz Analysis</span>
+                    </a>
+                </li>
+
+                <li>
                     <a href="#" onclick="loadViewQuiz();">
                         <span class="icon">
                             <ion-icon name="chatbubble-ellipses"></ion-icon>
@@ -117,12 +134,18 @@
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
 
+                
+
                 <div class="search">
+                    <form action="/search" method="post">
                     <label>
-                        <input type="text" placeholder="Search here">
-                        <ion-icon name="search-outline"></ion-icon>
+                        <input type="text" placeholder="Search based on subject or Index" name="search_data">
+                        <button type="submit"><ion-icon name="search-outline"></ion-icon></button>
                     </label>
+                </form>
                 </div>
+
+           
 
                 <div class="user">
                     <img src="../static/images/userlogo.png" id="userlogo1" />
@@ -151,6 +174,10 @@
         function loadDefaultAdminDashboard() {
             // Load the default content into the 'content' div
             document.getElementById('content').innerHTML = '<iframe src="/loadDefaultAdminDashContent" frameborder="0" style="width: 100vw; height: 100%;"></iframe>';
+        }
+        function loadQuizAnalysis() {
+            // Load dashboard.html into the content div
+            document.getElementById("content").innerHTML = '<iframe src="/loadOverAllAnalysis" frameborder="0" style="width: 100vw; height: 100%;"></iframe>';
         }
 
         function loadManageuser() {
