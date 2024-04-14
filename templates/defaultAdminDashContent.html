@@ -233,6 +233,8 @@
     {% if no_results %}
     <script>
         alert("No results matched your search query.");
+        window.location.href = "{{ url_for('loadDefaultAdminDashContent') }}";
+        
     </script>
     {% endif %}
 
