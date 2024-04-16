@@ -13,14 +13,15 @@
        @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Jersey+15&display=swap');
         #userlogo {
 
-            height: 24vh;
-            width: 50%;
+            height: 18vh;
+            width: 42%;
             border-radius: 50%;
-            margin-left: 22%;
+            margin-left: 24%;
         }
 
         #list {
             margin-top: 10%;
+            padding-top: 5%;
         }
         
 
@@ -31,6 +32,7 @@
         .search{
             margin-top: 2%;
         }
+      
     </style>
 </head>
 
@@ -43,8 +45,6 @@
                     <a href="#">
                         
                             <img src="../static/images/userlogo.png" id="userlogo" />
-                       
-                       
 
                     </a>
                 </li>
@@ -103,6 +103,15 @@
                             <ion-icon name="chatbubble-ellipses"></ion-icon>
                         </span>
                         <span class="title">Manage Quizzes</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" onclick="loadViewLink();">
+                        <span class="icon">
+                            <ion-icon name="chatbubble-ellipses"></ion-icon>
+                        </span>
+                        <span class="title">Manage Links</span>
                     </a>
                 </li>
 
@@ -205,6 +214,11 @@
         function loadViewQuiz() {
             // Load dashboard.html into the content div
             document.getElementById("content").innerHTML = '<iframe src="/viewQuiz" frameborder="0" style="width: 100vw; height: 100%;"></iframe>';
+        }
+
+        function loadViewLink() {
+            // Load dashboard.html into the content div
+            document.getElementById("content").innerHTML = '<iframe src="/manageLinks" frameborder="0" style="width: 100vw; height: 100%;"></iframe>';
         }
 
       

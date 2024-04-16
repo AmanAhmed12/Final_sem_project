@@ -11,6 +11,7 @@ from datetime import datetime  # Import datetime module
 import matplotlib.pyplot as plt
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from mysql.connector.errors import IntegrityError
+import json
 
 
 
@@ -99,6 +100,10 @@ def forgotpwd():
 @app.route('/manageQuiz')
 def manageQuiz():
     return render_template('manageQuiz.html')
+
+@app.route('/manageLink')
+def manageLink():
+    return render_template('manageLink.html')
 
 @app.route('/updateQuestions')
 def updateQuestions():
@@ -583,58 +588,6 @@ def displayUsers():
 
 
 
-@app.route('/quizGenerate', methods=['POST'])
-def quizGenerate():  
-    try:
-        # Extract quiz details from the form data
-        quiz_id = request.form.get('quizid')
-        subject_name = request.form.get('name')
-        semester = request.form.get('semester')
-        year = request.form.get('year')
-        
-        cursor = connection.cursor()
-
-       
-
-        # Insert quiz details into the quiz table
-        sql_quiz = "INSERT INTO quiz(quiz_id,semester, subject, year) VALUES (%s, %s, %s, %s)"
-        val_quiz = (quiz_id, semester, subject_name, year)
-        cursor.execute(sql_quiz, val_quiz)
-
-        # Extract questions and answers
-        for i in range(1, 21):
-            question = request.form.get(f'q{i}')
-            answer = request.form.get(f'q{i}a1').lower()
-             # Generate a unique qid
-            qid = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-
-            # Insert each question and answer into the questions table
-            sql_question = "INSERT INTO questions(quiz_id, qid, semester, subject, questions, answers) VALUES (%s, %s, %s, %s, %s, %s)"
-            val_question = (quiz_id, qid, semester, subject_name, question, answer)
-            cursor.execute(sql_question, val_question)
-
-        # Commit the transaction
-        connection.commit()
-        cursor.close()
-        base_url = " https://5be6-43-252-15-36.ngrok-free.app/quiz/"
-        quiz_url = f"{base_url}{year.replace(' ', '')}/{semester.replace(' ', '')}/{subject_name}/{quiz_id}"
-        
-        
-
-        flash("Quiz Generated Successfully!", "success")
-        return render_template('generateQuiz.html', quiz_url=quiz_url)
-
-
-    except IntegrityError as e:
-        flash("Quiz details already exist or Integrity error!", "error")
-        return redirect(url_for('generateQuiz'))
-
-    except Exception as e:
-        flash(f"An error occurred: {str(e)}", "error")
-        return redirect(url_for('generateQuiz'))
-
-
-
 #view quiz
 @app.route('/viewQuiz')
 def viewQuiz():
@@ -679,7 +632,6 @@ def update_quiz_status(qid, action):
     except Exception as e:
         flash(f"An error occurred: {str(e)}", "error")
         return redirect(url_for('viewQuiz'))
-
     
 
 
@@ -703,6 +655,79 @@ def updateQuestionsForm():
     except Exception as e:
         flash(f"An error occurred: {str(e)}", "error")
         return redirect(url_for('viewQuiz'))
+    
+
+
+#manage links 
+
+@app.route('/manageLinks')
+def manageLinks():
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SELECT  link_id,semester, subject, link,year,quiz_id,admin_email FROM link_details")
+        link_data = cursor.fetchall()
+        cursor.close()
+        return render_template('manageLink.html', links=link_data)
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "error")
+        return redirect(url_for('manageLink'))
+    
+
+
+@app.route('/update_link_status/<string:link_id>/<string:action>', methods=['POST'])
+def update_link_status(link_id, action):
+    try:
+        cursor = connection.cursor()
+        if action == 'Delete':
+            sql = "DELETE FROM link_details WHERE link_id= %s"
+            cursor.execute(sql, (link_id,))
+            connection.commit()
+            cursor.close()
+            flash("Deleted Successfully!!!", "success")
+            return redirect(url_for('manageLinks'))  # Redirect after deletion
+        
+        elif action == 'Update':
+            # Fetch the details of the question using the qid
+            sql = "SELECT * FROM link_details WHERE link_id = %s"
+            cursor.execute(sql, (link_id,))
+            link_details = cursor.fetchone()
+            cursor.close()
+
+            # Pass the question details to the updateQuestions.html template
+            return render_template('updatelink.html', link_details=link_details)
+        
+        else:
+            flash("Invalid action", "error")
+            return redirect(url_for('manageLinks'))
+
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "error")
+        return redirect(url_for('manageLinks'))
+    
+
+
+@app.route('/updateLinkForm', methods=['POST'])
+def updateLinkForm():
+    try:
+        cursor = connection.cursor()
+        link_id = request.form.get('link_id')
+        old_link_id = request.form.get('old_link_id')
+        link= request.form.get('link')
+        subject = request.form.get('name')
+        semester = request.form.get('sem')
+        year=request.form.get('year')
+
+        sql = "UPDATE link_details SET link_id=%s, semester = %s, subject = %s, link= %s, year= %s WHERE link_id= %s"
+        cursor.execute(sql, (link_id,semester, subject,link,year,old_link_id))
+        connection.commit()
+        cursor.close()
+        flash("Successfully Updated link details!!!")
+        return redirect(url_for('manageLinks'))
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "error")
+        return redirect(url_for('manageLinks'))
+    
+
 
 
 
@@ -1377,7 +1402,7 @@ def loadAnalysis():
     return render_template('analysis.html', one=one,two=two,three=three,four =four)
 
 
-import json
+
 
 @app.route('/loadOverAllAnalysis',  methods=['GET'])
 def loadOverAllAnalysis():
@@ -1455,6 +1480,66 @@ def search():
 
     # Handling GET requests
     return render_template('defaultAdminDashContent.html', one=[], two=[], three=[], four=[], no_results=no_results)
+
+
+
+
+@app.route('/quizGenerate', methods=['POST'])
+def quizGenerate():  
+    try:
+        # Extract quiz details from the form data
+        quiz_id = request.form.get('quizid')
+        subject_name = request.form.get('name')
+        semester = request.form.get('semester')
+        year = request.form.get('year')
+        
+        cursor = connection.cursor()
+
+        # Generate a unique qid
+        linkId= ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+        print(linkId)
+        base_url = " https://dceb-103-247-48-4.ngrok-free.app /quiz/"
+        quiz_url = f"{base_url}{year.replace(' ', '')}/{semester.replace(' ', '')}/{subject_name}/{quiz_id}"
+
+
+          # Insert quiz details into the quiz table
+        sql_quiz = "INSERT INTO quiz(quiz_id,semester, subject, year) VALUES (%s, %s, %s, %s)"
+        val_quiz = (quiz_id, semester, subject_name, year)
+        cursor.execute(sql_quiz, val_quiz)
+
+          # Insert quiz details into the quiz table
+        sql_link = "INSERT INTO link_details(link_id,semester, subject,link,year,quiz_id,admin_email) VALUES (%s, %s, %s, %s,%s,%s,%s)"
+        val_link = (linkId, semester, subject_name,quiz_url ,year,quiz_id,session.get('admin'))
+        cursor.execute(sql_link, val_link)
+
+
+        # Extract questions and answers
+        for i in range(1, 21):
+            question = request.form.get(f'q{i}')
+            answer = request.form.get(f'q{i}a1').lower()
+             # Generate a unique qid
+            qid = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+
+            # Insert each question and answer into the questions table
+            sql_question = "INSERT INTO questions( qid, semester, subject, questions, answers,quiz_id) VALUES (%s, %s, %s, %s, %s, %s)"
+            val_question = ( qid, semester, subject_name, question, answer,quiz_id)
+            cursor.execute(sql_question, val_question)
+
+        
+        # Commit the transaction
+        connection.commit()
+        cursor.close()
+        
+
+        flash("Quiz Generated Successfully!", "success")
+        return render_template('generateQuiz.html', quiz_url=quiz_url)
+
+
+ 
+
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "error")
+        return redirect(url_for('generateQuiz'))
 
 
   
