@@ -9,11 +9,14 @@
     padding: 0.5rem 1rem;
     transition: all 0.3s ease-in-out;
     border-radius: 0.5rem;
+   
+        
 }
 .navigation a:hover {
     background-color: rgba(255, 255, 255, 0.2);
     color: white;
 }
+
 
 #cont {
     margin-top: 180px;
@@ -39,7 +42,10 @@
     margin-left: 20px;
 }
 .navigation{
-    margin-left: 50%;
+    margin-left: 63%;
+    margin-top: 2%;
+
+
 }
 .bodytext:hover{
     color: white;

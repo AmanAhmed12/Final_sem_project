@@ -187,51 +187,6 @@ def closeupdate():
                 # If the user type is not specified in the session, return an error or handle it accordingly
                 flash("User type not specified", "error")
                 return redirect(url_for('log'))
-    
-
-
-
-# Inserting data into details table
-@app.route('/studentRegistration', methods=['POST'])
-def insert_data():
-    try:
-        s_email = request.form.get('email')
-        s_index = request.form.get('index')
-        s_name = request.form.get('name')
-        semester = request.form.get('semester')
-        registration_date = request.form.get('year')  # Get date string from form
-
-        # Parse the date string to get year and month
-        registration_date_obj = datetime.strptime(registration_date, '%Y-%m-%d')
-        year = registration_date_obj.year
-        month = registration_date_obj.month
-        s_password = generate_password_hash(request.form.get('password'), method='pbkdf2:sha256')  # Hash password
-        
-        # Perform validation
-        if not s_email or not s_index or not s_name or not semester or not year or not s_password:
-            flash("All fields are required", "error")
-            return redirect(url_for('register'))
-
-        cursor = connection.cursor()
-        sql = "INSERT INTO student_details(email,index_no,username,password,semester,year,current_year,month,current_month,status) VALUES (%s, %s, %s, %s, %s, %s, %s,%s,%s,%s)"
-        val = (s_email, s_index, s_name, s_password, semester, year,year,month,month, "active")
-        cursor.execute(sql, val)
-        connection.commit()
-        cursor.close()
-        flash("Account Created Successfully !!!", "success")
-        return redirect(url_for('log'))
-
-    except IntegrityError as e:
-        flash("Account  or Index already available!", "error")
-        return redirect(url_for('register'))
-    
-    except Exception as e:
-        flash(f"An error occurred: {str(e)}", "error")
-        return redirect(url_for('register'))
-    
-
-
-
 
 
 # create admin account
@@ -270,9 +225,49 @@ def createAdminAccount():
     except Exception as e:
         flash(f"An error occurred: {str(e)}", "error")
         return redirect(url_for('adminCreateAccount'))
+    
 
 
+# Inserting data into details table
+@app.route('/studentRegistration', methods=['POST'])
+def insert_data():
+    try:
+        s_email = request.form.get('email')
+        s_index = request.form.get('index')
+        s_name = request.form.get('name')
+       
+        # registration_date = request.form.get('year')  # Get date string from form
 
+        # # Parse the date string to get year and month
+        # registration_date_obj = datetime.strptime(registration_date, '%Y-%m-%d')
+        # year = registration_date_obj.year
+        # month = registration_date_obj.month
+        current_datetime = datetime.now()
+        current_date = current_datetime.date()
+               
+        s_password = generate_password_hash(request.form.get('password'), method='pbkdf2:sha256')  # Hash password
+        
+        # Perform validation
+        if not s_email or not s_index or not s_name  or not current_date or not s_password:
+            flash("All fields are required", "error")
+            return redirect(url_for('register'))
+
+        cursor = connection.cursor()
+        sql = "INSERT INTO student_details(email,index_no,username,password,semester,date,status) VALUES (%s, %s, %s, %s, %s, %s,%s)"
+        val = (s_email, s_index, s_name, s_password, "First Year First semester", current_date, "active")
+        cursor.execute(sql, val)
+        connection.commit()
+        cursor.close()
+        flash("Account Created Successfully !!!", "success")
+        return redirect(url_for('log'))
+
+    except IntegrityError as e:
+        flash("Account  or Index already available!", "error")
+        return redirect(url_for('register'))
+    
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", "error")
+        return redirect(url_for('register'))
 
 
 
@@ -311,14 +306,9 @@ def login():
                 cursor.execute(sql, ('loggedin', s_email))
                 connection.commit()
                 cursor.close()
+                
                 update_semester(s_email)
-                # Call get_user_data function to fetch user's year and store it in session
-                user_year = get_user_data(s_email)
-                if user_year:
-                        session['user_year'] = user_year
-                else:
-                        session.pop('user_year', None)
-
+                
                 return redirect(url_for('stuLogin'))  # Redirect to student dashboard
 
         cursor.close()
@@ -333,63 +323,71 @@ def login():
 
 
 
-
+from dateutil.relativedelta import relativedelta
 def update_semester(email):
     cursor = connection.cursor()
 
     # Retrieve user's year and semester from the student_details table using session data
-    cursor.execute("SELECT current_year, semester, current_month, year, month FROM student_details WHERE email = %s", (email,))
+    cursor.execute("SELECT  semester,date FROM student_details WHERE email = %s", (email,))
     user_data = cursor.fetchone()
 
     # Check if user_data is fetched properly
     if user_data:
-        registeredYear = int(user_data[3])  # Convert to int
-        registeredMonth = int(user_data[4])  # Convert to int
-        current_year = datetime.now().year  # Access datetime class directly
-        current_month = datetime.now().month  # Access datetime class directly
+        registeredDate = user_data[1]  # Convert to int
+        registered_date = datetime.strptime(registeredDate, "%Y-%m-%d").date()
+        print(registered_date)
+        current_datetime = datetime.now()
+        current_date = current_datetime.date()
+       # Calculate the difference between the current date and registered date in terms of months
+        delta = relativedelta(current_date, registered_date)
 
-        # Calculate the total number of months passed since registration
-        total_months = (current_year - registeredYear) * 12 + (current_month - registeredMonth)
+        # Calculate the total number of months passed
+        total_months = delta.years * 12 + delta.months
+        print(total_months,"total months")
+        intervals_passed=total_months//6
+        print(intervals_passed,"intervals_passed ")
+      
 
-        # Calculate how many intervals of six months have passed
-        intervals_passed = total_months // 6
+        if intervals_passed>0:
+            if intervals_passed == 1:
+                    
+                            # Update the semester and current year/month in the database
+                            cursor.execute("UPDATE student_details SET semester = %s  WHERE email = %s",
+                                        ("First Year Second semester", email))
 
-        # Check if at least one interval has passed since the last update
-        if current_year - registeredYear<=2:
-                if intervals_passed >= 1:
-                    # Update the semester for each interval
-                    for _ in range(intervals_passed):
-                        # Retrieve user's semester from the student_details table using session data
-                        cursor.execute("SELECT semester FROM student_details WHERE email = %s", (email,))
-                        user_semester = cursor.fetchone()[0]
+                            connection.commit()
+                            flash("Semester updated successfully.", "success")  # Add success message
+            elif intervals_passed == 2 :
+                    
+                            # Update the semester and current year/month in the database
+                            cursor.execute("UPDATE student_details SET semester = %s  WHERE email = %s",
+                                        ("Second Year First semester", email))
 
-                        # Determine the next semester based on the current semester
-                        if "First Year First semester" in user_semester:
-                            next_semester = "First Year Second semester"
-                        elif "First Year Second semester" in user_semester:
-                            next_semester = "Second Year First semester"
-                        elif "Second Year First semester" in user_semester:
-                            next_semester = "Second Year Second semester"
-                        else:
-                            
-                            return None
+                            connection.commit()
+                            flash("Semester updated successfully.", "success")  # Add success message
 
-                        # Update the semester and current year/month in the database
-                        cursor.execute("UPDATE student_details SET semester = %s, current_year=%s, current_month=%s WHERE email = %s",
-                                    (next_semester, current_year, current_month, email))
+            elif intervals_passed == 3 :
+                    
+                            # Update the semester and current year/month in the database
+                            cursor.execute("UPDATE student_details SET semester = %s  WHERE email = %s",
+                                        ("Second Year Second semester", email))
 
-                        connection.commit()
-                        flash("Semester updated successfully.", "success")  # Add success message
-                else:
-                    flash("Not enough time has passed since the last update.", "error")
+                            connection.commit()
+                            flash("Semester updated successfully.", "success")  # Add success message
 
+            else:
+                            # Update the semester and current year/month in the database
+                            cursor.execute("UPDATE student_details SET semester = %s  WHERE email = %s",
+                                        ("over", email))
+
+                            connection.commit()
+                            flash("Semester updated successfully.", "success")  # Add success message
         else:
-            # Update the semester and current year/month in the database
-            cursor.execute("UPDATE student_details SET semester = %s, current_year=%s, current_month=%s WHERE email = %s",
-                                    ("over", "over", "over", email))
+             flash("Not enough time has passed since the last update.", "error")
 
-            connection.commit()
-            flash("Semester updated successfully.", "success")  # Add success message
+
+
+       
 
     else:
         flash("User's year and semester information not found.", "error")
