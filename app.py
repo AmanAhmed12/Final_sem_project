@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from mysql.connector.errors import IntegrityError
 import json
+from dateutil.relativedelta import relativedelta
 
 
 
@@ -134,6 +135,9 @@ def attemptQuiz():
 @app.route('/loadReport')
 def loadReport():
     return render_template('report.html')
+
+
+
 
 
 @app.route('/quiz/<path:url>')
@@ -292,7 +296,7 @@ def login():
                 cursor.execute(sql, ('loggedin', s_email))
                 connection.commit()
                 cursor.close()
-                return redirect(url_for('adminLogin'))  # Redirect to admin dashboard
+                return render_template('admindashboard.html',stid=session['admin'])  # Redirect to admin dashboard
 
         # Check student_details table
         cursor.execute("SELECT email, password, status FROM student_details WHERE email = %s", (s_email,))
@@ -309,7 +313,8 @@ def login():
                 
                 update_semester(s_email)
                 
-                return redirect(url_for('stuLogin'))  # Redirect to student dashboard
+                return render_template('studentdashboard.html',stid=session['student'])
+               
 
         cursor.close()
 
@@ -323,7 +328,6 @@ def login():
 
 
 
-from dateutil.relativedelta import relativedelta
 def update_semester(email):
     cursor = connection.cursor()
 
@@ -356,7 +360,7 @@ def update_semester(email):
                                         ("First Year Second semester", email))
 
                             connection.commit()
-                            flash("Semester updated successfully.", "success")  # Add success message
+                           
             elif intervals_passed == 2 :
                     
                             # Update the semester and current year/month in the database
@@ -364,8 +368,7 @@ def update_semester(email):
                                         ("Second Year First semester", email))
 
                             connection.commit()
-                            flash("Semester updated successfully.", "success")  # Add success message
-
+                            
             elif intervals_passed == 3 :
                     
                             # Update the semester and current year/month in the database
@@ -373,7 +376,7 @@ def update_semester(email):
                                         ("Second Year Second semester", email))
 
                             connection.commit()
-                            flash("Semester updated successfully.", "success")  # Add success message
+                           
 
             else:
                             # Update the semester and current year/month in the database
@@ -381,9 +384,9 @@ def update_semester(email):
                                         ("over", email))
 
                             connection.commit()
-                            flash("Semester updated successfully.", "success")  # Add success message
+                           
         else:
-             flash("Not enough time has passed since the last update.", "error")
+             return None
 
 
 
@@ -393,11 +396,6 @@ def update_semester(email):
         flash("User's year and semester information not found.", "error")
 
     cursor.close()  # Close the cursor outside the loop
-
-
-
-
-
 
 
 
@@ -576,7 +574,7 @@ def update_user_status(email, action):
 def displayUsers():
     try:
         cursor = connection.cursor()
-        cursor.execute("SELECT email, index_no, username, password, semester, year, status FROM student_details")
+        cursor.execute("SELECT email, index_no, username, password, semester, date, status FROM student_details")
         users_data = cursor.fetchall()
         cursor.close()
         return render_template('manageUser.html', users=users_data)
@@ -1540,13 +1538,8 @@ def quizGenerate():
         return redirect(url_for('generateQuiz'))
 
 
-  
 
 
-
-
-
-   
 
 if __name__ == '__main__':
     app.run(debug=True)

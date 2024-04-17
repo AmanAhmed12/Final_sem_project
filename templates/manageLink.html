@@ -17,13 +17,15 @@
 .formback{
     background: linear-gradient(to right, #89aac9, #406b94, #406b94);
     width:70%;
-    resize: horizontal;
-    resize: vertical;
+   
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
     margin: 7%  0% 2% 2%;
     margin-left: 5%;
-    overflow-y: scroll;
+    overflow: hidden;
     
+}
+.formback:hover{
+    overflow-y: scroll;
 }
 .fonthead{
     font-size: 1.5rem;
@@ -70,8 +72,7 @@
    
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
     margin: 10%  16% 2% 2%;
-    
-    overflow: scroll;
+   
     
 }
 
@@ -112,7 +113,7 @@ td{
    
         
             <!-- Table -->
-            <div class="formback rounded-4  md:w-1/2 lg:w-1/3 px-4"  style="height: 500px; overflow-y: scroll;" data-aos="fade-up">
+            <div class="formback rounded-4  md:w-1/2 lg:w-1/3 px-4"  style="height: 500px; " data-aos="fade-up">
                
                 <div class="table-responsive pt-4 tab" >
                 {% with messages = get_flashed_messages(with_categories=true) %}

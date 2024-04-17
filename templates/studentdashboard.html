@@ -13,7 +13,7 @@
          #userlogo {
 
             height: 24vh;
-            width: 52%;
+            width: 55%;
             border-radius: 50%;
             margin-left: 23%;
             padding: 0;
@@ -29,6 +29,23 @@
         .title {
             font-weight: bold;
         }
+        .updateprofile{
+            position: absolute;
+            top:28%;
+            left:63%;
+            z-index: 9999;
+        }
+        .up{
+            font-size: 25px;
+            color: rgb(40, 118, 171);
+            border:none;
+           
+        }
+        #updateButton{
+            border-radius: 50%;
+            padding: 10%;
+            cursor: pointer;
+        }
         
      
     </style>
@@ -38,11 +55,18 @@
     <!-- =============== Navigation ================ -->
     <div class="container">
         <div class="navigation">
+            <div   class="updateprofile">
+                <button id="updateButton">  <ion-icon name="create-outline" class="up"></ion-icon></button>
+               <input type="file" id="inputImage" accept="image/*"  style="display: none;">
+            </div>
+         
             <ul>
                 <li id="list">
                     <a href="#">
-                            <img src="../static/images/userlogo.png" id="userlogo" />
+                            <img src="../static/images/defuser.png" id="userlogo" />
                     </a>
+                            
+                
                 </li>
 
                 <li>
@@ -149,16 +173,45 @@
             </div>
             
             
-            
-            
-
 
         </div>
     </div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-
-   
+    <script>
+        $(document).ready(function () {
+            var userEmail = "{{ stid }}"; // Get the user's email from the template
+    
+            // Check if there's a stored profile photo URL for this user
+            var storedPhotoURL = localStorage.getItem('profilePhotoURL_' + userEmail);
+            if (storedPhotoURL) {
+                $('#userlogo').attr('src', storedPhotoURL);
+            }
+    
+            // Trigger click event on the file input when updateButton is clicked
+            $('#updateButton').click(function () {
+                $('#inputImage').click();
+            });
+    
+            // Handle file input change event
+            $('#inputImage').change(function () {
+                event.preventDefault(); // Prevent default behavior
+                var file = this.files[0]; // Get the selected file
+                if (file) {
+                    var reader = new FileReader(); // Create a new FileReader object
+                    reader.onload = function (e) {
+                        // Set the profile photo image source to the selected image
+                        $('#userlogo').attr('src', e.target.result);
+                        // Save the updated profile photo URL to localStorage
+                        localStorage.setItem('profilePhotoURL_' + userEmail, e.target.result);
+                    }
+                    reader.readAsDataURL(file); // Read the selected file as a data URL
+                }
+            });
+        });
+    </script>
+    
 
       <!-- =========== Scripts =========  -->
     <script>
