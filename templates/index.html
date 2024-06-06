@@ -28,6 +28,23 @@
             font-family: "Anta", sans-serif;
             font-weight: 400;
             font-style: normal;
+            
+        }
+        .feed1{
+            text-align: center;
+            
+            margin-bottom: 5%;
+            margin-top: 5%;
+        }
+        .card {
+            max-width: 28vw; /* Adjust the width as needed */
+            margin-left: 2%;
+            background-color: #255e94;
+        }
+        .row{
+           
+           max-width: 97%;
+           margin-left: 2%;
         }
 
         .content1 {
@@ -82,8 +99,8 @@
         }
 
         #side {
-            height: 85vh;
-            width: 30vw;
+            height: 80vh;
+            width: 28vw;
             box-shadow: 2px 2px 5px 2px rgb(255, 255, 255); /* Adjust the rgba values for the shade of blue */
 
 
@@ -104,6 +121,11 @@
         .navbars{
             color:  var(--color-brand);
         }
+        .com{
+            color:rgb(9, 36, 83);
+            font-weight: bolder;
+        }
+        
        
     </style>
 </head>
@@ -114,47 +136,31 @@
     <section id="homemain" class="content1 full-height ">
 
         <!-- header -->
-        <header class="container mx-auto py-4 flex justify-between  items-center bg-green" >
+        <header class="container mx-auto py-4 flex justify-between  items-center " >
            
             <nav class="navigation">
                 <a href="#homemain" class="mx-2 hover:text-gray-300 font-bold navbars">Home</a>
-                <a href="#About" class="mx-2 hover:text-gray-300 font-bold navbars">About</a>
+                <a href="/about" class="mx-2 hover:text-gray-300 font-bold navbars">About</a>
                 <a href="#contactinfo" class="mx-2 hover:text-gray-300 font-bold navbars">Contact</a>
                 <a href="#feedback" class="mx-2 hover:text-gray-300 font-bold navbars">Feedback</a>
                 <a href="/log" class="mx-2 hover:text-gray-300 font-bold navbars" id="form-open">Login</a>
             </nav>
         </header>
 
-        <!-- home -->
-        <section class="container fade-in" id="cont">
-            <p class="text-5xl font-bold text-center mb-4 bodytext">Join the</p>
-            <p class="text-8xl font-bold text-center mb-4 bodytext">QUIZ <span class="text-green-400">SYSTEM</span>
-            </p>
-            <p class="text-4xl font-bold text-center mb-8 bodytext">With Nuwan Jayasekara</p>
-
-        </section>
-
-
-    </section>
-
-  
-
+        
         <!--About-->
-        <section id="About" class="content1 full-height">
+        <section id="Home" class="">
             <div class="con ">
                 <div class="col" id="one">
 
-                    <h1 class="display-4 fw-bold " data-aos="fade-up">I'M AN <span class="text-brand">ANDROID MOBILE APP
-                            DEVELOPER</span> | | <span class="text-brand">WEB DEVELOPER</span> | | <span
-                            class="text-brand">UI/UX DESIGNER</span> FROM KANDY, SRILANKA</h1>
-                    <p class="lead mt-2 mb-4" data-aos="fade-up" data-aos-delay="300">I am Amaan Ahmed, And I am a
-                        "Passionate Android mobile app developer, proficient web developer, and skilled UI/UX designer
-                        dedicated to creating intuitive, visually appealing, and high-performing digital experiences. With a
-                        blend of technical expertise and creative flair, I specialize in crafting innovative solutions that
-                        engage users and drive results."</p>
+                    <h1 class="display-4 fw-bold " data-aos="fade-down" data-aos-delay="50">JOIN THE <span class="text-brand">QUIZ SYSTEM  </span> WITH <span
+                            class="text-brand">NUWAN JAYASEKARA</span> FROM KANDY, SRILANKA</h1>
+                    <p class="lead mt-2 mb-4" data-aos="fade-up" data-aos-delay="300">I'm Nuwan Jayasekara, a lecturer at SLIATE's Department of Information Technology. I'm passionate about using technology to enhance education, and I'm excited to introduce our Online Quiz Management System.
+                        With my background in IT education and a focus on innovation, I create user-friendly solutions that improve learning. From crafting engaging quizzes to simplifying administrative tasks, my goal is to empower both students and educators.
+                        Let's revolutionize education together. Join me in this journey of innovation!</p>
 
 
-                    <div id="buttons" data-aos="fade-up" data-aos-delay="300">
+                    <div id="buttons" data-aos="fade-up" data-aos-delay="100">
                         <a href="/about" class="btn btn-brand me-3">View My Profile</a>
                         <a href="..\static\cv\Resume.pdf" id="downloadLink" target="_blank" class="link-custom">Download
                             Resume</a>
@@ -162,11 +168,17 @@
 
                 </div>
                 <div class="col" id="two">
-                    <img src="../static/images/sir2.png" id="side" class="d-none d-lg-block rounded-4 " alt=""
+                    <img src="../static/images/defuser.png" id="side" class="d-none d-lg-block rounded-4 " alt=""
                         data-aos="fade-up" data-aos-delay="300">
                 </div>
             </div>
         </section>
+
+
+    </section>
+
+  
+
         <!--/About-->
 
         <!---contact-->
@@ -213,18 +225,10 @@
                         <h1>How was the Experience? Drop Suggestions</h1>
                     </div>
 
-                    <!-- Star Ratings -->
-                    <div class="form-group col-md-12 mb-4">
-                        <label for="star-rating" id="ratehead">Rate Your Experience:</label>
-                        <span class="fa fa-star" onclick="document.getElementById('rating').value='1'; "></span>
-                        <span class="fa fa-star" onclick="document.getElementById('rating').value='2';"></span>
-                        <span class="fa fa-star" onclick="document.getElementById('rating').value='3';"></span>
-                        <span class="fa fa-star" onclick="document.getElementById('rating').value='4';"></span>
-                        <span class="fa fa-star" onclick="document.getElementById('rating').value='5';"></span>
-                    </div>
+                   
 
                     <div class="col-lg-8" data-aos="fade-up" data-aos-delay="300">
-                        <form id="contactForm" class="row g-lg-3 gy-3">
+                        <form id="contactForm" class="row g-lg-3 gy-3" action="/feed" method="post">
                             <div class="form-group col-md-6">
                                 <input type="text" class="form-control" name="name" placeholder="Enter your name">
                             </div>
@@ -240,8 +244,7 @@
 
 
                             <div class="form-group col-md-12 d-grid">
-                                <button type="button" class="btn1 btn-brand rounded-4"
-                                    onclick="sendFeedback(); resetStars();">Send Feedback</button>
+                                <button type="submit" class="btn1 btn-brand rounded-4">Send Feedback</button>
                             </div>
                         </form>
                     </div>
@@ -256,6 +259,32 @@
 
     <!---feedback-->
 
+        <!-- feed details-->
+       
+        <section id="review" class="content1 full-height">
+            <div class="row">
+                <div class="pb-4 feed1" data-aos="fade-up">
+                    <h6 class="text-brand">Hear From Our Customers</h6>
+                    <h1>See What Others Think --- Suggestions</h1>
+                </div>
+        
+                {% for column in columns %}
+                    <div class="col-lg-4">
+                        {% for feedback in column %}
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <h5 class="card-title text-brand">{{ feedback['uname'] }}</h5>
+                                    <h6 class="card-subtitle mb-2 ">{{ feedback['email'] }}</h6>
+                                    <p class="card-text com">{{ feedback['comments'] }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+        
+
 
     <section>
 
@@ -265,7 +294,7 @@
         <div class="container">
             <div class="row gy-4 justify-content-between">
                 <div id="foot" class="col-auto">
-                    <p class="mb-8">© Amaan Ahmed 2024. All Rights Reserved.</p>
+                    <p class="mb-8">© NUWAN JAYASEKARA 2024. All Rights Reserved.</p>
                 </div>
 
                 <div class="col-auto">
@@ -286,6 +315,11 @@
 </section>
 
      <!--/footer-->
+
+
+
+    
+     
 
     <script>
         function resetStars() {

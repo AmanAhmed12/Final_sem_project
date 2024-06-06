@@ -10,7 +10,8 @@
 }
 
 :root {
-  --blue:linear-gradient(to right, #89aac9, #406b94, #406b94);
+ 
+  --blue:linear-gradient(to right, #0b2e50, #0d3860, #0d365e);
   --white: #fff;
   --gray: #f5f5f5;
   --black1: #222;

@@ -60,7 +60,7 @@ body {
     background: linear-gradient(to right, hwb(203 2% 68%), #877171, #375239);
 } */
 .bg-gradient-to-r {
-    background: linear-gradient(to right, #89aac9, #406b94, #406b94);
+    background: linear-gradient(to right, #082c50, #0a345b, #082b4f);
 }
 
 .form-container {

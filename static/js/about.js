@@ -113,7 +113,7 @@ function changeThemeLight() {
 
 function changeThemeDark() {
   var content = document.getElementById("content-wrapper");
-  content.style.backgroundColor = "#022a30";
+  content.style.backgroundColor = "#112a4b";
   var home = document.getElementById("home");
   var heads = document.getElementsByClassName("head");
   var white= document.getElementsByClassName("white");
@@ -147,8 +147,8 @@ function changeThemeDark() {
     heads[i].style.color = "#e0f780";
   }
 
-  home.style.background="#022a30";
-  home.style.backgroundColor="#022a30";
+  home.style.background="#031c40";
+  home.style.backgroundColor="#031c40";
  
  
   status = false; // Update status to false

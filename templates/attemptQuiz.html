@@ -17,6 +17,18 @@
             width: 75vw;
             margin: 2%;
         }
+        .button1{
+            background: linear-gradient(to right, #3b6c9b, #6885a0, #3378b9);
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+           
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
         .detail {
             display: inline-block;
@@ -45,23 +57,46 @@
         .ans {
             margin: 2%;
         }
+        .currenttime{
+            font-weight: bolder;
+           margin-bottom: 1%;
+            width:71vw;
+            font-size: 1.2rem;
+            padding: 1%;
+            color:red;
+            border:2px solid rgb(40, 118, 171);
+            
+        }
+        .remtime{
+            font-weight: bolder;
+            color:red;
+            border:2px solid rgb(40, 118, 171);
+            width:71vw;
+            font-size: 1.2rem;
+            padding: 1%;
+        }
+        #timeDisplay{
+            margin: 4%;
+        }
     </style>
+
 </head>
 
 <body data-bs-spy="scroll">
+    <div id="timeDisplay" class="mb-4 ">
+        <div class="currenttime form-control">Current time: <span id="currentTime"></span></div>
+        <div class="remtime form-control">Time left to submit: <span id="countdownTimer"></span></div>
+    </div>
 
     <div class="flexed">
         <!-- login form -->
         <div class="formback rounded-5 md:w-1/2 lg:w-1/3 px-4" data-aos="fade-up">
 
             <form id="updateForm" action="/quizSubmit" method="post" class="p-3">
-                {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %}
-                <div class="alert alert-{{ category }} fontcol">{{ message }}</div>
-                {% endfor %} {% endif %} {% endwith %}
-
+                <!-- Flash messages -->
                 <h1 class="head text-center mb-5 font-bold log mt-4">Quiz</h1>
 
-                <!--Questions-->
+                <!-- Questions -->
                 <div class="mb-4">
                     <h1 class="mb-5 font-bold log mt-4">Questions</h1>
                     {% for i in range(questions|length) %}
@@ -75,17 +110,53 @@
                     <input type="hidden" name="subject" value="{{ sub }}">
                 </div>
                 
-
-                <button type="submit" class="button rounded-3 w-full">Submit Quiz</button>
+                <!-- Submit button -->
+                <button type="submit" class="button1 rounded-3 w-full">Submit Quiz</button>
             </form>
         </div>
     </div>
 
+    <!-- JavaScript imports -->
     <script src="./static/js/bootstrap.bundle.min.js"></script>
     <script src="./static/js/aos.js"></script>
     <script src="./static/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
 
+    <script>
+        $(document).ready(function () {
+            // Update current time
+            function updateCurrentTime() {
+                $('#currentTime').text(moment().format(' HH:mm:ss A'));
+            }
+    
+            // Update current time initially
+            updateCurrentTime();
+    
+            // Calculate target time 15 minutes from now
+            var targetTime = moment().add(1, 'minutes');
+    
+            // Update countdown timer and current time every second
+            setInterval(function () {
+                // Calculate remaining time
+                var remainingTime = moment.duration(targetTime.diff(moment()));
+    
+                // Update countdown timer display
+                $('#countdownTimer').text(
+                    remainingTime.minutes() + ' minutes ' + remainingTime.seconds() + ' seconds'
+                );
+    
+                // Update current time
+                updateCurrentTime();
+    
+                // If time is up, submit the form
+                if (remainingTime.asSeconds() <= 0) {
+                    $('#updateForm').submit();
+                }
+            }, 1000);
+        });
+    </script>
+    
 </body>
 
 </html>
-
